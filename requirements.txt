@@ -1,5 +1,6 @@
 Django>=4.2,<5.0
 python-dotenv>=1.0.1
+dj-database-url>=2.1.0  # <-- ADDED FOR SUPABASE
 
 # Document extraction
 pdfplumber>=0.11.4
