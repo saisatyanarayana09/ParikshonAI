@@ -1,8 +1,7 @@
 import os
 from pathlib import Path
-
+import dj_database_url  # <-- ADDED FOR SUPABASE/RENDER
 from dotenv import load_dotenv
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
@@ -53,15 +52,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "parikshon_ai.wsgi.application"
 
+# ── Database Updated for Supabase & Render ──────────────────────────────────
+# This looks for a DATABASE_URL variable. If not found, it falls back to a local sqlite3 database.
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "postgres"),
-        "USER": os.getenv("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-        "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -100,6 +98,8 @@ ALLOWED_UPLOAD_EXTENSIONS = {
     ".webp",
 }
 
+# ── Security Tweaks for Render ─────────────────────────────────────────────
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 CSRF_COOKIE_HTTPONLY = True
@@ -114,9 +114,7 @@ LOGIN_URL = "core:login"
 LOGIN_REDIRECT_URL = "core:chat"
 LOGOUT_REDIRECT_URL = "core:chat"
 
-# Anonymous session expires after 4 hours of inactivity
-SESSION_COOKIE_AGE = 4 * 60 * 60  # 14400 seconds
+SESSION_COOKIE_AGE = 4 * 60 * 60  
 SESSION_SAVE_EVERY_REQUEST = False
 
-# Anonymous free question limit (also enforced in views.py)
 ANON_CHAT_LIMIT = 5
