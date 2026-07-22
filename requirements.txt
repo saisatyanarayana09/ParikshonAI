@@ -16,6 +16,7 @@ scikit-learn>=1.5.1
 huggingface_hub>=0.34.0
 sentence-transformers>=3.0.1
 langchain-text-splitters>=0.2.0
+langchain-community>=0.2.0
 
 # Keyword extraction
 yake>=0.4.8
