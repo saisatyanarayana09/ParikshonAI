@@ -1,0 +1,53 @@
+{% extends "workspace_base.html" %}
+{% block title %}Create Account | Parikshon AI{% endblock %}
+{% block workspace_eyebrow %}Join Parikshon AI{% endblock %}
+{% block workspace_title %}Create your free account.{% endblock %}
+
+{% block workspace_content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">✨</div>
+            <h2>Sign Up</h2>
+            <p>Unlock unlimited chats and save your document history.</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="auth-error">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
+
+            <div class="auth-field">
+                <label>Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}<span class="field-error">{{ form.username.errors.0 }}</span>{% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label>Email <span class="optional-label">(optional)</span></label>
+                {{ form.email }}
+                {% if form.email.errors %}<span class="field-error">{{ form.email.errors.0 }}</span>{% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label>Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}<span class="field-error">{{ form.password1.errors.0 }}</span>{% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label>Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}<span class="field-error">{{ form.password2.errors.0 }}</span>{% endif %}
+            </div>
+
+            <button class="auth-submit-btn" type="submit">Create Account</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="{% url 'core:login' %}">Sign in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

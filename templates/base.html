@@ -1,0 +1,55 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Parikshon AI{% endblock %}</title>
+    <meta name="theme-color" content="#090d18">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}?v=2.2" rel="stylesheet">
+    <script src="{% static 'js/app.js' %}?v=2.2" defer></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="ambient" aria-hidden="true">
+        <span></span><span></span><span></span>
+    </div>
+    {% block layout %}
+    <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="{% url 'core:home' %}" aria-label="Parikshon AI home">
+            <span class="brand-mark">P</span>
+            <span>Parikshon AI</span>
+        </a>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-menu">
+            <span></span><span></span>
+        </button>
+        <div class="nav-links" id="primary-menu">
+            <a href="{% url 'core:chat' %}">Chat</a>
+            <a href="{% url 'core:ocr' %}">OCR</a>
+            <a href="{% url 'core:keywords' %}">Keywords</a>
+            <a href="{% url 'core:quiz' %}">Quiz</a>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
+                <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="page-shell" id="main-content">
+        {% if messages %}
+            <div class="message-stack" role="status" aria-live="polite">
+                {% for message in messages %}
+                    <div class="toast-message {{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+    {% endblock %}
+
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

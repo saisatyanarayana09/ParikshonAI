@@ -1,0 +1,46 @@
+{% extends "workspace_base.html" %}
+{% block title %}OCR Extractor | Parikshon AI{% endblock %}
+
+{% block workspace_eyebrow %}OCR Text Extractor{% endblock %}
+{% block workspace_title %}Extract text from scanned PDFs, images, and documents.{% endblock %}
+
+{% block workspace_content %}
+    {% if no_document %}
+    <div class="upload-workspace-centered">
+        <form class="upload-form-bar ai-form" method="post" action="{% url 'core:global_upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            {% include "core/_upload_box.html" with form=global_upload_form %}
+            <div class="ai-loader"><span></span><span></span><span></span></div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if extracted_text %}
+        <section class="split-workspace">
+            <aside class="preview-panel">
+                <div class="preview-doc">
+                    <span>DOC</span>
+                    <strong>{{ active_document.document_name }}</strong>
+                    <small>OCR Mode</small>
+                </div>
+                <div class="preview-controls">
+                    <button type="button">-</button>
+                    <span>100%</span>
+                    <button type="button">+</button>
+                </div>
+            </aside>
+            <article class="result-card">
+                <div class="result-heading">
+                    <h2>Extracted Text</h2>
+                    <div class="action-row">
+                        <button class="icon-button" type="button" data-copy-target="#ocr-output">Copy</button>
+                        <a class="secondary-action compact" href="{% url 'core:download_txt' %}">Download</a>
+                    </div>
+                </div>
+                <input class="search-input" type="search" placeholder="Search extracted text" data-filter-text="#ocr-output">
+                <pre class="result-text tall" id="ocr-output">{{ extracted_text }}</pre>
+            </article>
+        </section>
+    {% endif %}
+{% endblock %}

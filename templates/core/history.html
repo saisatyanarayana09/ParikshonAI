@@ -1,0 +1,39 @@
+{% extends "workspace_base.html" %}
+{% block title %}My History | Parikshon AI{% endblock %}
+{% block workspace_eyebrow %}Your Sessions{% endblock %}
+{% block workspace_title %}Past documents and chats.{% endblock %}
+
+{% block workspace_content %}
+<div class="history-page">
+
+    {% if not sessions %}
+        <div class="history-empty">
+            <div class="empty-icon">📂</div>
+            <h3>No history yet</h3>
+            <p>Upload a document and start chatting — your sessions will appear here.</p>
+            <a href="{% url 'core:chat' %}" class="auth-submit-btn" style="display:inline-block; text-decoration:none; margin-top:1rem;">Go to Chat</a>
+        </div>
+    {% else %}
+        <div class="history-grid">
+            {% for session in sessions %}
+            <div class="history-card">
+                <div class="history-card-header">
+                    <span class="doc-type-badge">📄</span>
+                    <div class="history-card-meta">
+                        <strong class="history-doc-name" title="{{ session.document_name }}">{{ session.document_name }}</strong>
+                        <span class="history-date">{{ session.created_at|date:"M d, Y · h:i A" }}</span>
+                    </div>
+                </div>
+                <div class="history-card-body">
+                    <span class="history-msg-count">{{ session.message_count }} question{{ session.message_count|pluralize }}</span>
+                    {% if session.messages.all %}
+                        <p class="history-preview">"{{ session.messages.first.question|truncatechars:90 }}"</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

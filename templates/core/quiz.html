@@ -1,0 +1,50 @@
+{% extends "workspace_base.html" %}
+{% load core_extras %}
+{% block title %}Quiz Generator | Parikshon AI{% endblock %}
+
+{% block workspace_eyebrow %}Quiz Generator{% endblock %}
+{% block workspace_title %}Create a five-question quiz from your document.{% endblock %}
+
+{% block workspace_content %}
+    {% if no_document %}
+    <div class="upload-workspace-centered">
+        <form class="upload-form-bar ai-form" method="post" action="{% url 'core:global_upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            {% include "core/_upload_box.html" with form=global_upload_form %}
+            <div class="ai-loader"><span></span><span></span><span></span></div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if questions %}
+        <form class="result-card quiz-card" method="post">
+            {% csrf_token %}
+            <h2>Document Quiz</h2>
+            {% for question in questions %}
+                <fieldset class="quiz-question">
+                    <legend>{{ forloop.counter }}. {{ question.question }}</legend>
+                    {% for option in question.options %}
+                        <label class="quiz-option">
+                            <input type="radio" name="answer_{{ forloop.parentloop.counter0 }}" value="{{ option }}" {% if submitted_answers and submitted_answers|get_item:forloop.parentloop.counter0 == option %}checked{% endif %}>
+                            <span>{{ option }}</span>
+                        </label>
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+            <button class="primary-action" type="submit">Submit Quiz</button>
+        </form>
+    {% endif %}
+    {% if score %}
+        <article class="result-card">
+            <h2>Your Score: {{ score.score }}/{{ score.total }} ({{ score.percentage }}%)</h2>
+            {% for result in score.results %}
+                <div class="score-row {% if result.is_correct %}correct{% else %}incorrect{% endif %}">
+                    <strong>{{ result.question }}</strong>
+                    <p>Your answer: {{ result.selected|default:"No answer" }}</p>
+                    <p>Correct answer: {{ result.correct_answer }}</p>
+                </div>
+            {% endfor %}
+        </article>
+    {% endif %}
+{% endblock %}

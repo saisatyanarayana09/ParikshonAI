@@ -1,0 +1,16 @@
+{% if document_info %}
+<aside class="info-panel" aria-label="Document information">
+    <div>
+        <span class="mini-label">Document</span>
+        <strong>{{ document_info.filename }}</strong>
+    </div>
+    <dl>
+        <div><dt>Type</dt><dd>{{ document_info.document_type }}</dd></div>
+        <div><dt>Words</dt><dd>{{ document_info.word_count }}</dd></div>
+        <div><dt>Characters</dt><dd>{{ document_info.character_count }}</dd></div>
+        <div><dt>Reading</dt><dd>{{ document_info.reading_time }} min</dd></div>
+        <div><dt>Language</dt><dd>{{ document_info.language }}</dd></div>
+        <div><dt>Status</dt><dd>{{ document_info.status }}</dd></div>
+    </dl>
+</aside>
+{% endif %}

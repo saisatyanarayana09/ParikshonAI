@@ -1,0 +1,105 @@
+{% extends "workspace_base.html" %}
+{% block title %}Chat With Document | Parikshon AI{% endblock %}
+
+{% block workspace_eyebrow %}Chat With Document{% endblock %}
+{% block workspace_title %}Ask questions grounded in your uploaded content.{% endblock %}
+
+{% block workspace_content %}
+<div class="chat-workspace">
+
+    {# ── Messages area – scrollable, grows to fill available space ── #}
+    <div class="chat-messages-area" id="chat-messages-area">
+
+        {% if active_session %}
+            {% if not chat_messages %}
+                <div class="chat-empty-state">
+                    <div class="empty-icon">💬</div>
+                    <h3>Document Ready</h3>
+                    <p>Your document is loaded. Ask any question below.</p>
+                    <div class="suggestion-chips">
+                        <button type="button" class="suggestion-chip" data-fill-question="Summarize the most important points.">Summarize key points</button>
+                        <button type="button" class="suggestion-chip" data-fill-question="What are the action items in this document?">Find action items</button>
+                        <button type="button" class="suggestion-chip" data-fill-question="What should I pay attention to?">Review highlights</button>
+                    </div>
+                </div>
+            {% else %}
+                {% for message in chat_messages %}
+                    <article class="chat-bubble user-bubble">
+                        <span class="bubble-label">You</span>
+                        <p>{{ message.question }}</p>
+                    </article>
+                    <article class="chat-bubble ai-bubble">
+                        <span class="bubble-label">Parikshon AI</span>
+                        <p>{{ message.answer }}</p>
+                        <div class="message-tools">
+                            <button type="button" data-copy-nearest>Copy</button>
+                            <button type="button">Good</button>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+
+        {% if no_document %}
+            <div class="chat-empty-state no-doc-state">
+                <div class="empty-icon">📄</div>
+                <h3>No Document Attached</h3>
+                <p>Use the bar below to attach a PDF, DOCX, or image and start chatting.</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+    {# ── Bottom bar – always visible at the foot of the chat pane ── #}
+    <div class="chat-bottom-bar">
+
+        {% if active_session %}
+            {# ── Anonymous limit banner ── #}
+            {% if anon_remaining is not None %}
+                {% if limit_reached %}
+                <div class="limit-banner limit-reached">
+                    <span>🔒 You've used all {{ anon_limit }} free questions.</span>
+                    <div class="limit-actions">
+                        <a href="{% url 'core:register' %}" class="limit-cta-btn">Create Free Account</a>
+                        <a href="{% url 'core:login' %}" class="limit-login-link">Sign in</a>
+                    </div>
+                </div>
+                {% elif anon_remaining <= 2 %}
+                <div class="limit-banner limit-warning">
+                    <span>⚠️ {{ anon_remaining }} free question{{ anon_remaining|pluralize }} remaining. <a href="{% url 'core:register' %}">Sign up for unlimited →</a></span>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {# Question input form #}
+            <form method="post" class="chat-input-form ai-form" id="question-form">
+                {% csrf_token %}
+                {{ question_form.session_id }}
+                <div class="chat-input-row {% if limit_reached %}input-disabled{% endif %}">
+                    {{ question_form.question }}
+                    <button class="bar-connect-btn" type="submit" {% if limit_reached %}disabled{% endif %} aria-label="Send question">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+                {% if not limit_reached %}
+                <div class="suggestions">
+                    <button type="button" data-fill-question="Summarize the most important points.">Summarize key points</button>
+                    <button type="button" data-fill-question="What are the action items in this document?">Find action items</button>
+                    <button type="button" data-fill-question="What should I pay attention to?">Review highlights</button>
+                </div>
+                {% endif %}
+                <div class="ai-loader"><span></span><span></span><span></span></div>
+            </form>
+        {% else %}
+            {# File upload form styled as Model 2 bar #}
+            <form class="upload-form-bar ai-form" method="post" action="{% url 'core:global_upload' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                {% include "core/_upload_box.html" with form=global_upload_form %}
+                <div class="ai-loader"><span></span><span></span><span></span></div>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

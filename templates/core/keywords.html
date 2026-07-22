@@ -1,0 +1,40 @@
+{% extends "workspace_base.html" %}
+{% block title %}Keyword Extractor | Parikshon AI{% endblock %}
+
+{% block workspace_eyebrow %}Keyword Extractor{% endblock %}
+{% block workspace_title %}Find the most important words and phrases.{% endblock %}
+
+{% block workspace_content %}
+    {% if no_document %}
+    <div class="upload-workspace-centered">
+        <form class="upload-form-bar ai-form" method="post" action="{% url 'core:global_upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            {% include "core/_upload_box.html" with form=global_upload_form %}
+            <div class="ai-loader"><span></span><span></span><span></span></div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if keywords %}
+        <article class="result-card">
+            <div class="result-heading">
+                <h2>Top Keywords</h2>
+                <input class="search-input compact-input" type="search" placeholder="Filter keywords" data-filter-keywords>
+            </div>
+            <div class="keyword-cloud">
+                {% for item in keywords %}
+                    <span class="keyword-chip" data-keyword-chip>
+                        {{ item.keyword }}
+                        <small>{{ item.frequency }}</small>
+                    </span>
+                {% endfor %}
+            </div>
+            <div class="word-cloud" aria-label="Keyword cloud">
+                {% for item in keywords|slice:":10" %}
+                    <span style="--i: {{ forloop.counter }}">{{ item.keyword }}</span>
+                {% endfor %}
+            </div>
+        </article>
+    {% endif %}
+{% endblock %}

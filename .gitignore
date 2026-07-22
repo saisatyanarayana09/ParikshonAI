@@ -1,0 +1,82 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+lib/
+lib64/
+*.manifest
+
+# ── Virtual Environment ───────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+.env.bak
+
+# ── Secrets / Environment Variables ──────────────────────────────────────────
+# NEVER commit these — they contain API keys, DB passwords, secret keys
+.env
+
+# ── Django ───────────────────────────────────────────────────────────────────
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+mediafiles/
+media/
+
+# ── Database ─────────────────────────────────────────────────────────────────
+*.sql
+*.dump
+
+# ── OS Files ─────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDE / Editor ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ── Testing ──────────────────────────────────────────────────────────────────
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# ── Old/Unused Vector Stores ──────────────────────────────────────────────────
+chroma_db/
+vector_store/
