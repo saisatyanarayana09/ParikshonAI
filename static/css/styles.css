@@ -32,19 +32,76 @@
     --transition-fast: all 0.1s ease;
 }
 
-/* ── Dark Mode ── */
+/* ── Dark Mode (Cyberpunk Brutalism) ── */
 [data-theme="dark"] {
-    --bg: #0A0A0A;
-    --bg-alt: #1A1A1A;
-    --black: #FFFBE6;
-    --white: #1A1A1A;
-    --border: 3px solid #FFFBE6;
-    --border-thick: 4px solid #FFFBE6;
-    --shadow: 5px 5px 0px #FFFBE6;
-    --shadow-lg: 7px 7px 0px #FFFBE6;
-    --shadow-sm: 3px 3px 0px #FFFBE6;
-    --shadow-hover: 8px 8px 0px #FFFBE6;
-    --shadow-active: 2px 2px 0px #FFFBE6;
+    --bg: #0D0D12;
+    --bg-alt: #16161E;
+    --black: #E0E0E0; /* Light gray text */
+    --white: #1A1B26; /* Dark cards */
+    
+    /* Neon Borders & Shadows */
+    --border: 3px solid #333333;
+    --border-thick: 4px solid #333333;
+    --shadow: 5px 5px 0px #FF007F; /* Magenta */
+    --shadow-lg: 7px 7px 0px #FF007F;
+    --shadow-sm: 3px 3px 0px #FF007F;
+    --shadow-hover: 8px 8px 0px #00F0FF; /* Cyan */
+    --shadow-active: 2px 2px 0px #00F0FF;
+}
+
+/* Dark Mode Component Overrides */
+[data-theme="dark"] .workspace-header,
+[data-theme="dark"] .topbar {
+    background: var(--bg-alt);
+    border-bottom: var(--border-thick);
+}
+
+[data-theme="dark"] .workspace-sidebar {
+    background: #000000;
+    border-right: var(--border-thick);
+}
+
+[data-theme="dark"] .workspace-sidebar .nav-item {
+    color: #E0E0E0;
+}
+
+[data-theme="dark"] .workspace-sidebar .nav-item.active,
+[data-theme="dark"] .workspace-sidebar .nav-item:hover {
+    background: #00F0FF;
+    color: #000000;
+}
+
+[data-theme="dark"] .topbar-menu-btn {
+    background: #000000;
+    color: #FF007F;
+    border: 3px solid #333333;
+}
+
+[data-theme="dark"] .primary-btn,
+[data-theme="dark"] .auth-submit,
+[data-theme="dark"] .btn-primary {
+    background: #00F0FF;
+    color: #000000;
+}
+
+[data-theme="dark"] .primary-btn:hover,
+[data-theme="dark"] .auth-submit:hover,
+[data-theme="dark"] .btn-primary:hover {
+    background: #FF007F;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .secondary-action,
+[data-theme="dark"] .compact-btn {
+    background: #1A1B26;
+    color: #E0E0E0;
+    border-color: #333333;
+}
+
+[data-theme="dark"] .secondary-action:hover,
+[data-theme="dark"] .compact-btn:hover {
+    background: #00F0FF;
+    color: #000000;
 }
 
 /* ── Reset ── */
