@@ -31,4 +31,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Run migrations and start the Gunicorn server simultaneously 
-CMD bash -c "python manage.py migrate && gunicorn parikshon_ai.wsgi:application --bind 0.0.0.0:8000"
+CMD bash -c "python manage.py migrate && gunicorn parikshon_ai.wsgi:application --bind 0.0.0.0:8000 --timeout 120"
