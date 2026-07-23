@@ -4,8 +4,29 @@ import math
 from django.conf import settings
 from huggingface_hub import InferenceClient
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from pgvector.django import CosineDistance
+
+from ..models import ChatSession, DocumentChunk
+
+# We want 1000 characters per chunk, with 200 characters overlap
+TEXT_SPLITTER = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200,
+    separators=["\n\n", "\n", ".", " ", ""],
+)
+
+class HFAPIEmbeddings:
+    """Custom LangChain-compatible embeddings using the official HuggingFace InferenceClient."""
+    def __init__(self, api_key: str, model_name: str):
+        self.client = InferenceClient(token=api_key)
+        self.model_name = model_name
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        # Returns a numpy array, we convert it to a list of lists of floats for pgvector
+        return self.client.feature_extraction(texts, model=self.model_name).tolist()
+
+    def embed_query(self, text: str) -> list[float]:
+        return self.embed_documents([text])[0]
 
 
 class ChatError(Exception):
@@ -22,7 +43,7 @@ def _require_huggingface_key() -> str:
 def _embedding_model():
     """Returns the API-based embedding model to avoid loading PyTorch/models into RAM."""
     api_key = _require_huggingface_key()
-    return HuggingFaceInferenceAPIEmbeddings(
+    return HFAPIEmbeddings(
         api_key=api_key,
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
