@@ -113,24 +113,21 @@
 (function () {
     const burger = document.getElementById('sidebar-burger');
     const body   = document.getElementById('sidebar-body');
-    const sidebar = document.getElementById('workspace-sidebar');
     if (!burger || !body) return;
 
     // Restore saved state
-    const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    const collapsed = localStorage.getItem('sidebar-nav-collapsed') === 'true';
     if (collapsed) {
         body.classList.add('nav-hidden');
-        sidebar.classList.add('sidebar-collapsed');
         burger.setAttribute('aria-expanded', 'false');
         burger.classList.add('is-open');
     }
 
     burger.addEventListener('click', () => {
         const isHidden = body.classList.toggle('nav-hidden');
-        sidebar.classList.toggle('sidebar-collapsed', isHidden);
         burger.setAttribute('aria-expanded', String(!isHidden));
         burger.classList.toggle('is-open', isHidden);
-        localStorage.setItem('sidebar-collapsed', isHidden);
+        localStorage.setItem('sidebar-nav-collapsed', isHidden);
     });
 })();
 </script>

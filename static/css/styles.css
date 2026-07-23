@@ -1769,38 +1769,39 @@ img { max-width: 100%; }
     transform: translateY(-7.5px) rotate(-45deg);
 }
 
-/* Collapsible sidebar body */
+/* Collapsible sidebar body - collapses vertically while brand logo stays 100% visible */
 .sidebar-body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.25s ease;
-    max-width: 100%;
-    opacity: 1;
     overflow-y: auto;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease,
+                padding 0.3s ease;
+    max-height: 2000px;
+    opacity: 1;
 }
 
 .sidebar-body.nav-hidden {
-    max-width: 0;
+    max-height: 0;
     opacity: 0;
     pointer-events: none;
     overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
-/* Shrink sidebar width when collapsed */
+/* Ensure sidebar width stays full size so brand logo is always completely visible */
 .workspace-sidebar {
-    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 260px;
+    flex-shrink: 0;
+    transition: none;
 }
 
-.workspace-sidebar.sidebar-collapsed {
-    width: 64px !important;
+.brand-text {
+    white-space: nowrap;
+    opacity: 1;
+    display: inline-block;
 }
 
-.workspace-sidebar.sidebar-collapsed .brand-text {
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-}
 
