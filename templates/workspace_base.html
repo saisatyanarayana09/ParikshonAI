@@ -2,16 +2,6 @@
 {% block layout %}
 <div class="workspace-container">
     <aside class="workspace-sidebar" id="workspace-sidebar">
-
-        {# ── Sidebar header containing high-visibility Menu icon button ── #}
-        <div class="sidebar-header">
-            <button class="sidebar-menu-btn" data-sidebar-toggle aria-label="Toggle navigation" title="Toggle Sections">
-                <span class="burger-icon">☰</span>
-                <span class="menu-label">Menu</span>
-            </button>
-        </div>
-
-        {# ── Collapsible body ── #}
         <div class="sidebar-body" id="sidebar-body">
             <nav class="sidebar-nav">
                 <a class="nav-item {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'core:chat' %}">
@@ -73,17 +63,18 @@
                 {% endif %}
             </div>
         </div>{# /sidebar-body #}
-
     </aside>
 
     <main class="workspace-main">
         <header class="workspace-header">
             <div class="header-left">
-                <p class="eyebrow">{% block workspace_eyebrow %}{% endblock %}</p>
-                <h1>{% block workspace_title %}{% endblock %}</h1>
+                <button class="topbar-menu-btn" data-sidebar-toggle aria-label="Toggle navigation menu" title="Toggle Sections">
+                    <span class="burger-icon">☰</span>
+                    <span class="menu-text">Menu</span>
+                </button>
             </div>
 
-            {# ── Newly placed Brand Logo at Top Middle (without P icon) ── #}
+            {# ── Brand Logo at Top Middle (without P icon) ── #}
             <div class="header-center">
                 <a class="brand" href="{% url 'core:home' %}">
                     <span class="brand-text">Parikshon AI</span>
@@ -115,19 +106,19 @@
 <script>
 (function () {
     const toggles = document.querySelectorAll('[data-sidebar-toggle]');
+    const sidebar = document.getElementById('workspace-sidebar');
     const body    = document.getElementById('sidebar-body');
-    if (!body || !toggles.length) return;
-
-    // Restore saved state
-    const collapsed = localStorage.getItem('sidebar-nav-collapsed') === 'true';
-    if (collapsed) {
-        body.classList.add('nav-hidden');
-    }
+    if (!sidebar || !toggles.length) return;
 
     toggles.forEach(toggle => {
-        toggle.addEventListener('click', () => {
-            const isHidden = body.classList.toggle('nav-hidden');
-            localStorage.setItem('sidebar-nav-collapsed', isHidden);
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Toggle mobile drawer
+            sidebar.classList.toggle('sidebar-open');
+            // Toggle vertical collapse on desktop/mobile
+            if (body) {
+                body.classList.toggle('nav-hidden');
+            }
         });
     });
 })();

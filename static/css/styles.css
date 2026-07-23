@@ -268,37 +268,37 @@ img { max-width: 100%; }
     background: var(--black);
 }
 
-.sidebar-menu-btn {
+.topbar-menu-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
+    gap: 0.4rem;
     padding: 0.5rem 1rem;
-    background: var(--yellow);
-    color: var(--black);
+    background: var(--black);
+    color: var(--yellow);
     border: 2.5px solid var(--black);
     box-shadow: 3px 3px 0 var(--white);
     font-weight: 800;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-family: var(--font-main);
     cursor: pointer;
     transition: var(--transition);
 }
 
-.sidebar-menu-btn:hover {
+.topbar-menu-btn:hover {
     transform: translate(-2px, -2px);
     box-shadow: 5px 5px 0 var(--white);
-    background: #FFEE66;
+    background: #222;
+    color: var(--yellow);
 }
 
-.sidebar-menu-btn:active {
+.topbar-menu-btn:active {
     transform: translate(2px, 2px);
     box-shadow: 1px 1px 0 var(--white);
 }
 
-.sidebar-menu-btn .burger-icon {
-    font-size: 1.25rem;
+.topbar-menu-btn .burger-icon {
+    font-size: 1.15rem;
     line-height: 1;
 }
 
