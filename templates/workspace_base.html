@@ -1,75 +1,86 @@
 {% extends "base.html" %}
 {% block layout %}
 <div class="workspace-container">
-    <aside class="workspace-sidebar">
+    <aside class="workspace-sidebar" id="workspace-sidebar">
+
+        {# ── Always-visible header: brand + hamburger ── #}
         <div class="sidebar-header">
             <div class="brand">
                 <span class="brand-mark">P</span>
-                <span>Parikshon AI</span>
+                <span class="brand-text">Parikshon AI</span>
             </div>
+            <button class="sidebar-burger" id="sidebar-burger" aria-label="Toggle navigation" aria-expanded="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-        
-        <nav class="sidebar-nav">
-            <a class="nav-item {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'core:chat' %}">
-                <span class="nav-icon">💬</span>
-                <span>Chat with PDF</span>
-            </a>
-            <a class="nav-item {% if request.resolver_match.url_name == 'ocr' %}active{% endif %}" href="{% url 'core:ocr' %}">
-                <span class="nav-icon">🔍</span>
-                <span>OCR Extractor</span>
-            </a>
-            <a class="nav-item {% if request.resolver_match.url_name == 'keywords' %}active{% endif %}" href="{% url 'core:keywords' %}">
-                <span class="nav-icon">🔑</span>
-                <span>Keywords</span>
-            </a>
-            <a class="nav-item {% if request.resolver_match.url_name == 'quiz' %}active{% endif %}" href="{% url 'core:quiz' %}">
-                <span class="nav-icon">📝</span>
-                <span>Quiz Generator</span>
-            </a>
-            {% if user.is_authenticated %}
-            <a class="nav-item {% if request.resolver_match.url_name == 'history' %}active{% endif %}" href="{% url 'core:history' %}">
-                <span class="nav-icon">🕘</span>
-                <span>My History</span>
-            </a>
-            {% endif %}
-        </nav>
 
-        {% if active_document %}
-        <div class="sidebar-doc-card">
-            <span class="mini-label">Active Document</span>
-            <strong class="doc-title" title="{{ active_document.document_name }}">{{ active_document.document_name }}</strong>
-            {% if active_document_metadata %}
-            <ul class="doc-stats">
-                <li>Type: {{ active_document_metadata.document_type }}</li>
-                <li>Words: {{ active_document_metadata.word_count }}</li>
-                <li>Reading: {{ active_document_metadata.reading_time }} min</li>
-            </ul>
-            {% endif %}
-            <a href="{% url 'core:clear_document' %}" class="clear-btn">Clear Workspace</a>
-        </div>
-        {% endif %}
+        {# ── Collapsible body ── #}
+        <div class="sidebar-body" id="sidebar-body">
+            <nav class="sidebar-nav">
+                <a class="nav-item {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'core:chat' %}">
+                    <span class="nav-icon">💬</span>
+                    <span>Chat with PDF</span>
+                </a>
+                <a class="nav-item {% if request.resolver_match.url_name == 'ocr' %}active{% endif %}" href="{% url 'core:ocr' %}">
+                    <span class="nav-icon">🔍</span>
+                    <span>OCR Extractor</span>
+                </a>
+                <a class="nav-item {% if request.resolver_match.url_name == 'keywords' %}active{% endif %}" href="{% url 'core:keywords' %}">
+                    <span class="nav-icon">🔑</span>
+                    <span>Keywords</span>
+                </a>
+                <a class="nav-item {% if request.resolver_match.url_name == 'quiz' %}active{% endif %}" href="{% url 'core:quiz' %}">
+                    <span class="nav-icon">📝</span>
+                    <span>Quiz Generator</span>
+                </a>
+                {% if user.is_authenticated %}
+                <a class="nav-item {% if request.resolver_match.url_name == 'history' %}active{% endif %}" href="{% url 'core:history' %}">
+                    <span class="nav-icon">🕘</span>
+                    <span>My History</span>
+                </a>
+                {% endif %}
+            </nav>
 
-        {# ── Auth block at the foot of the sidebar ── #}
-        <div class="sidebar-auth-block">
-            {% if user.is_authenticated %}
-                <div class="sidebar-user-info">
-                    <span class="user-avatar">{{ user.username|first|upper }}</span>
-                    <div class="user-details">
-                        <strong>{{ user.username }}</strong>
-                        <span class="user-tag">Signed in · Unlimited</span>
+            {% if active_document %}
+            <div class="sidebar-doc-card">
+                <span class="mini-label">Active Document</span>
+                <strong class="doc-title" title="{{ active_document.document_name }}">{{ active_document.document_name }}</strong>
+                {% if active_document_metadata %}
+                <ul class="doc-stats">
+                    <li>Type: {{ active_document_metadata.document_type }}</li>
+                    <li>Words: {{ active_document_metadata.word_count }}</li>
+                    <li>Reading: {{ active_document_metadata.reading_time }} min</li>
+                </ul>
+                {% endif %}
+                <a href="{% url 'core:clear_document' %}" class="clear-btn">Clear Workspace</a>
+            </div>
+            {% endif %}
+
+            {# ── Auth block ── #}
+            <div class="sidebar-auth-block">
+                {% if user.is_authenticated %}
+                    <div class="sidebar-user-info">
+                        <span class="user-avatar">{{ user.username|first|upper }}</span>
+                        <div class="user-details">
+                            <strong>{{ user.username }}</strong>
+                            <span class="user-tag">Signed in · Unlimited</span>
+                        </div>
                     </div>
-                </div>
-                <a href="{% url 'core:logout' %}" class="sidebar-auth-btn logout-btn">Sign Out</a>
-            {% else %}
-                <p class="sidebar-auth-prompt">Sign in to save chats &amp; unlock unlimited questions.</p>
-                <div class="sidebar-auth-buttons">
-                    <a href="{% url 'core:login' %}" class="sidebar-auth-btn">Sign In</a>
-                    <a href="{% url 'core:register' %}" class="sidebar-auth-btn register-btn">Register Free</a>
-                </div>
-            {% endif %}
-        </div>
+                    <a href="{% url 'core:logout' %}" class="sidebar-auth-btn logout-btn">Sign Out</a>
+                {% else %}
+                    <p class="sidebar-auth-prompt">Sign in to save chats &amp; unlock unlimited questions.</p>
+                    <div class="sidebar-auth-buttons">
+                        <a href="{% url 'core:login' %}" class="sidebar-auth-btn">Sign In</a>
+                        <a href="{% url 'core:register' %}" class="sidebar-auth-btn register-btn">Register Free</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>{# /sidebar-body #}
+
     </aside>
-    
+
     <main class="workspace-main">
         <header class="workspace-header">
             <div class="header-left">
@@ -77,16 +88,13 @@
                 <h1>{% block workspace_title %}{% endblock %}</h1>
             </div>
             <div class="header-right">
-                <button class="menu-toggle" type="button" data-sidebar-toggle aria-label="Toggle sidebar" style="display:flex;">
-                    <span></span><span></span>
-                </button>
                 {% if active_document %}
                 <a href="{% url 'core:clear_document' %}" class="secondary-action compact-btn">↑ New File</a>
                 {% endif %}
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme"></button>
             </div>
         </header>
-        
+
         <div class="workspace-content reveal" style="display:flex; flex-direction:column; flex:1; overflow:hidden; padding:0; min-height:0;">
             {% if messages %}
                 <div class="message-stack" role="status" aria-live="polite">
@@ -95,9 +103,35 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            
+
             {% block workspace_content %}{% endblock %}
         </div>
     </main>
 </div>
+
+<script>
+(function () {
+    const burger = document.getElementById('sidebar-burger');
+    const body   = document.getElementById('sidebar-body');
+    const sidebar = document.getElementById('workspace-sidebar');
+    if (!burger || !body) return;
+
+    // Restore saved state
+    const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    if (collapsed) {
+        body.classList.add('nav-hidden');
+        sidebar.classList.add('sidebar-collapsed');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.classList.add('is-open');
+    }
+
+    burger.addEventListener('click', () => {
+        const isHidden = body.classList.toggle('nav-hidden');
+        sidebar.classList.toggle('sidebar-collapsed', isHidden);
+        burger.setAttribute('aria-expanded', String(!isHidden));
+        burger.classList.toggle('is-open', isHidden);
+        localStorage.setItem('sidebar-collapsed', isHidden);
+    });
+})();
+</script>
 {% endblock %}
