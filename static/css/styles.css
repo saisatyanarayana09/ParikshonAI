@@ -230,9 +230,16 @@ img { max-width: 100%; }
 .sidebar-header {
     padding: 1.25rem 1rem;
     border-bottom: 3px solid var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.sidebar-header .brand { color: var(--yellow); }
+.sidebar-header.centered-brand .brand {
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+}
 .sidebar-header .brand-mark {
     background: var(--yellow);
     color: var(--black);

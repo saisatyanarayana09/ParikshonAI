@@ -3,17 +3,12 @@
 <div class="workspace-container">
     <aside class="workspace-sidebar" id="workspace-sidebar">
 
-        {# ── Always-visible header: brand + hamburger ── #}
-        <div class="sidebar-header">
+        {# ── Always-visible header with centered brand logo ── #}
+        <div class="sidebar-header centered-brand">
             <div class="brand">
                 <span class="brand-mark">P</span>
                 <span class="brand-text">Parikshon AI</span>
             </div>
-            <button class="sidebar-burger" id="sidebar-burger" aria-label="Toggle navigation" aria-expanded="true">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
 
         {# ── Collapsible body ── #}
@@ -88,6 +83,9 @@
                 <h1>{% block workspace_title %}{% endblock %}</h1>
             </div>
             <div class="header-right">
+                <button class="menu-toggle bar-connect-btn compact-btn" type="button" data-sidebar-toggle aria-label="Toggle navigation menu" title="Toggle Sections">
+                    <span>☰ Menu</span>
+                </button>
                 {% if active_document %}
                 <a href="{% url 'core:clear_document' %}" class="secondary-action compact-btn">↑ New File</a>
                 {% endif %}
@@ -111,23 +109,21 @@
 
 <script>
 (function () {
-    const burger = document.getElementById('sidebar-burger');
-    const body   = document.getElementById('sidebar-body');
-    if (!burger || !body) return;
+    const toggles = document.querySelectorAll('[data-sidebar-toggle]');
+    const body    = document.getElementById('sidebar-body');
+    if (!body || !toggles.length) return;
 
     // Restore saved state
     const collapsed = localStorage.getItem('sidebar-nav-collapsed') === 'true';
     if (collapsed) {
         body.classList.add('nav-hidden');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.classList.add('is-open');
     }
 
-    burger.addEventListener('click', () => {
-        const isHidden = body.classList.toggle('nav-hidden');
-        burger.setAttribute('aria-expanded', String(!isHidden));
-        burger.classList.toggle('is-open', isHidden);
-        localStorage.setItem('sidebar-nav-collapsed', isHidden);
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const isHidden = body.classList.toggle('nav-hidden');
+            localStorage.setItem('sidebar-nav-collapsed', isHidden);
+        });
     });
 })();
 </script>
