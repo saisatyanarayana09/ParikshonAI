@@ -38,7 +38,9 @@
                         <a class="secondary-action compact" href="{% url 'core:download_txt' %}">Download</a>
                     </div>
                 </div>
-                <input class="search-input" type="search" placeholder="Search extracted text" data-filter-text="#ocr-output">
+                <div style="padding: 1rem 1.25rem; border-bottom: var(--border);">
+                    <input class="search-input" type="search" placeholder="Search extracted text" data-filter-text="#ocr-output" style="width: 100%;">
+                </div>
                 <pre class="result-text tall" id="ocr-output">{{ extracted_text }}</pre>
             </article>
         </section>
