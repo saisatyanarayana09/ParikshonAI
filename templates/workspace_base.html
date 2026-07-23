@@ -107,7 +107,6 @@
 (function () {
     const toggles = document.querySelectorAll('[data-sidebar-toggle]');
     const sidebar = document.getElementById('workspace-sidebar');
-    const body    = document.getElementById('sidebar-body');
     if (!sidebar || !toggles.length) return;
 
     toggles.forEach(toggle => {
@@ -115,10 +114,8 @@
             e.stopPropagation();
             // Toggle mobile drawer
             sidebar.classList.toggle('sidebar-open');
-            // Toggle vertical collapse on desktop/mobile
-            if (body) {
-                body.classList.toggle('nav-hidden');
-            }
+            // Toggle desktop sliding
+            sidebar.classList.toggle('sidebar-closed');
         });
     });
 })();
