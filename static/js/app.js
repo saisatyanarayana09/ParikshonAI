@@ -50,8 +50,10 @@ function setupSidebarToggle() {
     const sidebar = document.querySelector(".workspace-sidebar");
     if (!toggle || !sidebar) return;
 
-    toggle.addEventListener("click", () => {
+    toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
         sidebar.classList.toggle("sidebar-open");
+        sidebar.classList.toggle("sidebar-closed");
     });
 
     // Close sidebar when clicking a nav item on mobile

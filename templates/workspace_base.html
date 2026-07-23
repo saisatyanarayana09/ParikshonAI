@@ -104,21 +104,4 @@
     </main>
 </div>
 
-<script>
-(function () {
-    const toggles = document.querySelectorAll('[data-sidebar-toggle]');
-    const sidebar = document.getElementById('workspace-sidebar');
-    if (!sidebar || !toggles.length) return;
-
-    toggles.forEach(toggle => {
-        toggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            // Toggle mobile drawer
-            sidebar.classList.toggle('sidebar-open');
-            // Toggle desktop sliding
-            sidebar.classList.toggle('sidebar-closed');
-        });
-    });
-})();
-</script>
 {% endblock %}
