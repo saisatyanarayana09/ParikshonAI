@@ -203,12 +203,23 @@ async function submitChatAJAX(form) {
         chatArea.querySelector(".ai-typing")?.remove();
 
         if (data.success) {
-            chatArea.insertAdjacentHTML("beforeend", `
-                <article class="chat-bubble ai-bubble">
-                    <span class="bubble-label">Parikshon AI</span>
-                    <p>${escapeHTML(data.answer).replace(/\n/g, '<br>')}</p>
-                </article>
-            `);
+            // Use marked.js if available, otherwise basic formatting
+            const renderMarkdown = (text) => {
+                if (window.__renderAIAnswer) return window.__renderAIAnswer(text);
+                if (window.marked) return window.marked.parse(text);
+                return escapeHTML(text).replace(/\n/g, '<br>');
+            };
+
+            const bubble = document.createElement('article');
+            bubble.className = 'chat-bubble ai-bubble';
+            bubble.innerHTML = `
+                <span class="bubble-label">Parikshon AI</span>
+                <div class="ai-answer-body">${renderMarkdown(data.answer)}</div>
+                <div class="message-tools">
+                    <button type="button" data-copy-nearest>Copy</button>
+                </div>
+            `;
+            chatArea.appendChild(bubble);
             if (data.limit_reached) {
                 location.reload(); // Reload to show the limit banner
             }

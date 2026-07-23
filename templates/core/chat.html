@@ -30,7 +30,7 @@
                     </article>
                     <article class="chat-bubble ai-bubble">
                         <span class="bubble-label">Parikshon AI</span>
-                        <p>{{ message.answer }}</p>
+                        <div class="ai-answer-body">{% autoescape off %}{{ message.answer|linebreaksbr }}{% endautoescape %}</div>
                         <div class="message-tools">
                             <button type="button" data-copy-nearest>Copy</button>
                             <button type="button">Good</button>
@@ -102,4 +102,23 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// Configure marked for safe rendering
+marked.setOptions({ breaks: true, gfm: true });
+
+// Render markdown in all server-rendered AI answers on page load
+document.querySelectorAll(".ai-answer-body").forEach(el => {
+    const raw = el.innerText;
+    el.innerHTML = marked.parse(raw);
+});
+
+// Override the AJAX render function to use marked
+window.__renderAIAnswer = function(text) {
+    return marked.parse(text);
+};
+</script>
 {% endblock %}

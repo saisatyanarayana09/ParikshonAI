@@ -1635,3 +1635,59 @@ img { max-width: 100%; }
     }
 }
 
+
+/* -- Markdown Answer Styling -- */
+.ai-answer-body { font-size: 0.95rem; line-height: 1.7; }
+.ai-answer-body p { margin: 0 0 0.65rem; }
+.ai-answer-body p:last-child { margin-bottom: 0; }
+.ai-answer-body strong, .ai-answer-body b { font-weight: 700; }
+.ai-answer-body em, .ai-answer-body i { font-style: italic; }
+.ai-answer-body h1, .ai-answer-body h2, .ai-answer-body h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0.75rem 0 0.4rem;
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 0.2rem;
+}
+.ai-answer-body h1 { font-size: 1.1rem; }
+.ai-answer-body h2 { font-size: 1rem; }
+.ai-answer-body h3 { font-size: 0.95rem; }
+.ai-answer-body ul, .ai-answer-body ol {
+    padding-left: 1.4rem;
+    margin: 0.4rem 0 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.ai-answer-body li { font-size: 0.92rem; }
+.ai-answer-body code {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 0.1rem 0.35rem;
+    border: 2px solid var(--black);
+}
+.ai-answer-body pre {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 1rem;
+    overflow-x: auto;
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+    margin: 0.5rem 0;
+}
+.ai-answer-body pre code { background: none; border: none; padding: 0; color: inherit; }
+.ai-answer-body blockquote {
+    border-left: 4px solid var(--black);
+    padding: 0.4rem 0.9rem;
+    background: var(--bg-alt);
+    margin: 0.5rem 0;
+    font-style: italic;
+    color: #555;
+}
+.ai-answer-body a { text-decoration: underline; color: var(--blue); font-weight: 600; }
+.ai-answer-body hr { border: 2px solid var(--black); margin: 0.75rem 0; }
+
