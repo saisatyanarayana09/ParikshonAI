@@ -3,7 +3,7 @@ python-dotenv>=1.0.1
 dj-database-url>=2.1.0  # <-- ADDED FOR SUPABASE
 
 # Document extraction
-pdfplumber>=0.11.4
+pypdf>=4.3.0
 pytesseract>=0.3.13
 pdf2image>=1.17.0
 Pillow>=10.4.0

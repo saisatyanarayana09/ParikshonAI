@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
-import pdfplumber
+import pypdf
 import pytesseract
 from docx import Document
 from pdf2image import convert_from_path
@@ -19,14 +19,16 @@ def extract_pdf_text(path: str) -> tuple[str, bool]:
     text_parts = []
     scanned_pages = 0
     try:
-        with pdfplumber.open(path) as pdf:
-            for page in pdf.pages:
+        with open(path, "rb") as f:
+            reader = pypdf.PdfReader(f)
+            total_pages = len(reader.pages)
+            for page in reader.pages:
                 page_text = page.extract_text() or ""
                 if len(page_text.strip()) < 20:
                     scanned_pages += 1
                 text_parts.append(page_text)
             normal_text = "\n".join(text_parts).strip()
-            is_scanned = bool(pdf.pages) and scanned_pages >= max(1, len(pdf.pages) // 2)
+            is_scanned = bool(total_pages) and scanned_pages >= max(1, total_pages // 2)
     except Exception as exc:
         raise ExtractionError(f"Unable to read PDF: {exc}") from exc
 
