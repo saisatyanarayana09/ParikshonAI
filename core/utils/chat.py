@@ -4,7 +4,8 @@ import math
 from django.conf import settings
 from huggingface_hub import InferenceClient
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from pgvector.django import CosineDistance
 
 
 class ChatError(Exception):
@@ -19,7 +20,12 @@ def _require_huggingface_key() -> str:
 
 
 def _embedding_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    """Returns the API-based embedding model to avoid loading PyTorch/models into RAM."""
+    api_key = _require_huggingface_key()
+    return HuggingFaceInferenceAPIEmbeddings(
+        api_key=api_key,
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
 
 
 def build_document_index(text: str, session) -> int:
