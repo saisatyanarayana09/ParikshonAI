@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     setupTheme();
     setupMenu();
+    setupSidebarToggle();
     setupUploads();
     setupForms();
     setupCopyButtons();
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupTextSearch();
     setupRegenerate();
     setupChatScroll();
+    setupChatKeyboard();
 });
 
 function setupTheme() {
@@ -32,6 +34,51 @@ function setupMenu() {
     toggle.addEventListener("click", () => {
         const open = menu.classList.toggle("open");
         toggle.setAttribute("aria-expanded", String(open));
+    });
+
+    // Close on outside click
+    document.addEventListener("click", (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+        }
+    });
+}
+
+function setupSidebarToggle() {
+    const toggle = document.querySelector("[data-sidebar-toggle]");
+    const sidebar = document.querySelector(".workspace-sidebar");
+    if (!toggle || !sidebar) return;
+
+    // Only show toggle on mobile
+    const checkMobile = () => {
+        toggle.style.display = window.innerWidth <= 768 ? "flex" : "none";
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("sidebar-open");
+    });
+
+    // Close sidebar when clicking a nav item on mobile
+    sidebar.querySelectorAll(".nav-item").forEach(item => {
+        item.addEventListener("click", () => {
+            if (window.innerWidth <= 768) sidebar.classList.remove("sidebar-open");
+        });
+    });
+}
+
+function setupChatKeyboard() {
+    const textarea = document.querySelector("#question-form textarea");
+    if (!textarea) return;
+    textarea.addEventListener("keydown", (e) => {
+        // Ctrl+Enter or Cmd+Enter to submit
+        if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            const form = textarea.closest("form");
+            if (form) submitChatAJAX(form);
+        }
     });
 }
 

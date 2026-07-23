@@ -8,15 +8,12 @@
     <meta name="theme-color" content="#090d18">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="{% static 'css/styles.css' %}?v=2.2" rel="stylesheet">
-    <script src="{% static 'js/app.js' %}?v=2.2" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}?v=3.0" rel="stylesheet">
+    <script src="{% static 'js/app.js' %}?v=3.0" defer></script>
     {% block head %}{% endblock %}
 </head>
 <body>
-    <div class="ambient" aria-hidden="true">
-        <span></span><span></span><span></span>
-    </div>
     {% block layout %}
     <nav class="topbar" aria-label="Primary navigation">
         <a class="brand" href="{% url 'core:home' %}" aria-label="Parikshon AI home">
@@ -56,7 +53,6 @@
     </main>
     {% endblock %}
 
-    <script src="{% static 'js/app.js' %}?v=2.3"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

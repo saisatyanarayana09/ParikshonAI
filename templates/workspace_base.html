@@ -77,12 +77,13 @@
                 <h1>{% block workspace_title %}{% endblock %}</h1>
             </div>
             <div class="header-right">
-                {% if active_document %}
-                <a href="{% url 'core:clear_document' %}" class="primary-action compact-btn">Upload New File</a>
-                {% endif %}
-                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
-                    <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+                <button class="menu-toggle" type="button" data-sidebar-toggle aria-label="Toggle sidebar" style="display:flex;">
+                    <span></span><span></span>
                 </button>
+                {% if active_document %}
+                <a href="{% url 'core:clear_document' %}" class="secondary-action compact-btn">↑ New File</a>
+                {% endif %}
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme"></button>
             </div>
         </header>
         
