@@ -2113,3 +2113,66 @@ textarea {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* UI/UX Improvements added for AJAX and Toasts */
+
+.toast-message.hide {
+    animation: fadeOut 0.4s ease both;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+.upload-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(9, 13, 26, 0.7);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.upload-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.upload-overlay .ai-loader {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.upload-overlay h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text), var(--muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.upload-overlay p {
+    color: var(--muted);
+    margin-top: 0.5rem;
+}
+
+.chat-bubble.ai-typing {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.9rem 1.4rem;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.chat-bubble.ai-typing .ai-loader {
+    display: flex;
+    padding: 0;
+}
+

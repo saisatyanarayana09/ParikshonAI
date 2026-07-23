@@ -1,7 +1,7 @@
 import json
 
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
@@ -154,10 +154,22 @@ def chat_view(request):
                 if is_anon:
                     request.session["anon_chat_count"] = anon_count + 1
 
+                is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+                if is_ajax:
+                    return JsonResponse({
+                        "success": True, 
+                        "answer": answer,
+                        "limit_reached": (is_anon and request.session["anon_chat_count"] >= ANON_CHAT_LIMIT)
+                    })
+
                 messages.success(request, "Answer generated.")
             except ChatError as exc:
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return JsonResponse({"success": False, "error": str(exc)}, status=400)
                 messages.error(request, str(exc))
             except Exception as exc:
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return JsonResponse({"success": False, "error": f"Unexpected error: {exc}"}, status=500)
                 messages.error(request, f"Unexpected error: {exc}")
             return redirect("core:chat")
 

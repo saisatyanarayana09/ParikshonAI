@@ -46,10 +46,17 @@
             </div>
         {% endif %}
         {% block content %}{% endblock %}
+        
+        <!-- Global Upload Loading Overlay -->
+        <div class="upload-overlay">
+            <div class="ai-loader"><span></span><span></span><span></span></div>
+            <h3>Processing Document</h3>
+            <p>Extracting text and generating AI embeddings...</p>
+        </div>
     </main>
     {% endblock %}
 
-    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/app.js' %}?v=2.3"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

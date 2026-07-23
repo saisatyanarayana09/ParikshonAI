@@ -83,18 +83,105 @@ function setupUploads() {
 
 function setupForms() {
     document.querySelectorAll(".ai-form").forEach((form) => {
-        form.addEventListener("submit", () => {
+        form.addEventListener("submit", (e) => {
+            if (form.id === "question-form") {
+                e.preventDefault();
+                submitChatAJAX(form);
+                return;
+            }
+
+            // For uploads, just show the loading overlay while the page navigates
             form.classList.add("processing");
+            const overlay = document.querySelector(".upload-overlay");
+            if (overlay) overlay.classList.add("active");
+            
             const button = form.querySelector("button[type='submit']");
             if (button) {
                 button.disabled = true;
                 button.dataset.originalText = button.textContent;
                 button.textContent = "Processing...";
             }
-            const zone = form.querySelector("[data-upload-zone]");
-            if (zone) runProcessingStages(zone);
         });
     });
+
+    // Auto dismiss toasts
+    setTimeout(() => {
+        document.querySelectorAll(".toast-message").forEach(t => {
+            t.classList.add("hide");
+            setTimeout(() => t.remove(), 400);
+        });
+    }, 4000);
+}
+
+async function submitChatAJAX(form) {
+    const input = form.querySelector("input[name='question'], textarea[name='question']");
+    const questionText = input.value.trim();
+    if (!questionText) return;
+
+    // 1. Add user message to UI
+    const chatArea = document.getElementById("chat-messages-area");
+    const emptyState = document.querySelector(".chat-empty-state");
+    if (emptyState) emptyState.remove();
+
+    chatArea.insertAdjacentHTML("beforeend", `
+        <article class="chat-bubble user-bubble">
+            <span class="bubble-label">You</span>
+            <p>${escapeHTML(questionText)}</p>
+        </article>
+        <article class="chat-bubble ai-bubble ai-typing">
+            <div class="ai-loader" style="display:flex;"><span></span><span></span><span></span></div>
+        </article>
+    `);
+    
+    // Clear input & disable form
+    input.value = "";
+    form.classList.add("processing");
+    const submitBtn = form.querySelector("button[type='submit']");
+    if(submitBtn) submitBtn.disabled = true;
+    chatArea.scrollTop = chatArea.scrollHeight;
+
+    try {
+        const formData = new FormData(form);
+        formData.set("question", questionText);
+        const res = await fetch(form.action || window.location.href, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+        const data = await res.json();
+        
+        // Remove typing indicator
+        chatArea.querySelector(".ai-typing")?.remove();
+
+        if (data.success) {
+            chatArea.insertAdjacentHTML("beforeend", `
+                <article class="chat-bubble ai-bubble">
+                    <span class="bubble-label">Parikshon AI</span>
+                    <p>${escapeHTML(data.answer).replace(/\n/g, '<br>')}</p>
+                </article>
+            `);
+            if (data.limit_reached) {
+                location.reload(); // Reload to show the limit banner
+            }
+        } else {
+            alert(data.error || "Failed to get answer");
+        }
+    } catch (e) {
+        chatArea.querySelector(".ai-typing")?.remove();
+        alert("A network error occurred. Please try again.");
+    }
+
+    form.classList.remove("processing");
+    if(submitBtn) submitBtn.disabled = false;
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
 }
 
 function updateFileMeta(input, meta) {
