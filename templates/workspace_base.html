@@ -2,14 +2,6 @@
 {% block layout %}
 <div class="workspace-container">
     <aside class="workspace-sidebar" id="workspace-sidebar">
-        {# ── Nav Bar Header (Only Menu Icon) ── #}
-        <div class="sidebar-header" style="justify-content: flex-start; padding: 1rem 1.5rem; border-bottom: 3px solid var(--yellow); display: flex; align-items: center; min-height: 70px;">
-            <button class="topbar-menu-btn" data-sidebar-toggle aria-label="Toggle navigation menu" title="Toggle Sections">
-                <span class="burger-icon">☰</span>
-                <span class="menu-text">Menu</span>
-            </button>
-        </div>
-
         <div class="sidebar-body" id="sidebar-body">
             <nav class="sidebar-nav">
                 <a class="nav-item {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'core:chat' %}">
@@ -76,7 +68,10 @@
     <main class="workspace-main">
         <header class="workspace-header" style="min-height: 70px;">
             <div class="header-left">
-                {# Menu moved to sidebar #}
+                <button class="topbar-menu-btn" data-sidebar-toggle aria-label="Toggle navigation menu" title="Toggle Sections" style="display: inline-flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;">
+                    <span class="burger-icon">☰</span>
+                    <span class="menu-text">Menu</span>
+                </button>
             </div>
 
             {# ── Brand Logo at Top Middle (without P icon) ── #}
