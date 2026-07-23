@@ -227,18 +227,44 @@ img { max-width: 100%; }
     top: 0;
 }
 
-.sidebar-header {
-    padding: 1.25rem 1rem;
-    border-bottom: 3px solid var(--yellow);
+.workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--yellow);
+    border-bottom: var(--border-thick);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.sidebar-header.centered-brand .brand {
+.header-center .brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--black);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    border-bottom: 3px solid var(--yellow);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    width: 100%;
-    margin: 0 auto;
+    min-height: 64px;
 }
 .sidebar-header .brand-mark {
     background: var(--yellow);
