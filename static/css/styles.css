@@ -1871,15 +1871,17 @@ img { max-width: 100%; }
     opacity: 1;
 }
 
-.workspace-sidebar {
-    width: 260px;
-    flex-shrink: 0;
-    margin-left: 0;
-    transition: margin-left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+@media (min-width: 769px) {
+    .workspace-sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        margin-left: 0;
+        transition: margin-left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-.workspace-sidebar.sidebar-closed {
-    margin-left: -260px;
+    .workspace-sidebar.sidebar-closed {
+        margin-left: -260px;
+    }
 }
 
 .brand-text {

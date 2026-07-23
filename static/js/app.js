@@ -62,6 +62,15 @@ function setupSidebarToggle() {
             if (window.innerWidth <= 768) sidebar.classList.remove("sidebar-open");
         });
     });
+
+    // Close on outside click (mobile)
+    document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains("sidebar-open")) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove("sidebar-open");
+            }
+        }
+    });
 }
 
 function setupChatKeyboard() {
