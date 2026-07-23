@@ -110,6 +110,11 @@ HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
 HUGGINGFACE_CHAT_MODEL = os.getenv("HUGGINGFACE_CHAT_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 
 # ── Authentication ──────────────────────────────────────────────────────────
+AUTHENTICATION_BACKENDS = [
+    'core.backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 LOGIN_URL = "core:login"
 LOGIN_REDIRECT_URL = "core:chat"
 LOGOUT_REDIRECT_URL = "core:chat"

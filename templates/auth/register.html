@@ -19,15 +19,21 @@
             {% endif %}
 
             <div class="auth-field">
-                <label>Username</label>
-                {{ form.username }}
-                {% if form.username.errors %}<span class="field-error">{{ form.username.errors.0 }}</span>{% endif %}
+                <label>Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}<span class="field-error">{{ form.name.errors.0 }}</span>{% endif %}
             </div>
 
             <div class="auth-field">
-                <label>Email <span class="optional-label">(optional)</span></label>
+                <label>Email ID</label>
                 {{ form.email }}
                 {% if form.email.errors %}<span class="field-error">{{ form.email.errors.0 }}</span>{% endif %}
+            </div>
+
+            <div class="auth-field">
+                <label>Date of Birth</label>
+                {{ form.dob }}
+                {% if form.dob.errors %}<span class="field-error">{{ form.dob.errors.0 }}</span>{% endif %}
             </div>
 
             <div class="auth-field">

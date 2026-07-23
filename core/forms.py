@@ -52,13 +52,19 @@ class QuizAnswerForm(forms.Form):
 # ── Authentication Forms ──────────────────────────────────────────────────────
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(
+    name = forms.CharField(
+        label="Name",
         max_length=150,
-        widget=forms.TextInput(attrs={"placeholder": "Choose a username", "autocomplete": "username"}),
+        widget=forms.TextInput(attrs={"placeholder": "Your Name", "autocomplete": "name"}),
     )
     email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={"placeholder": "Email ID", "autocomplete": "email"}),
+    )
+    dob = forms.DateField(
+        label="Date of Birth",
         required=False,
-        widget=forms.EmailInput(attrs={"placeholder": "Email (optional)", "autocomplete": "email"}),
+        widget=forms.DateInput(attrs={"type": "date", "placeholder": "Date of Birth"}),
     )
     password1 = forms.CharField(
         label="Password",
@@ -69,11 +75,11 @@ class RegisterForm(forms.Form):
         widget=forms.PasswordInput(attrs={"placeholder": "Repeat password", "autocomplete": "new-password"}),
     )
 
-    def clean_username(self):
-        username = self.cleaned_data["username"].strip()
-        if User.objects.filter(username__iexact=username).exists():
-            raise forms.ValidationError("This username is already taken.")
-        return username
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("This email is already registered.")
+        return email
 
     def clean(self):
         cleaned = super().clean()
@@ -81,26 +87,39 @@ class RegisterForm(forms.Form):
         p2 = cleaned.get("password2", "")
         if p1 and p2 and p1 != p2:
             self.add_error("password2", "Passwords do not match.")
+        
         if p1:
-            try:
-                validate_password(p1)
-            except forms.ValidationError as exc:
-                self.add_error("password1", exc)
+            if len(p1) < 8:
+                self.add_error("password1", "Password must be at least 8 characters long.")
+            if not any(char.isalpha() for char in p1):
+                self.add_error("password1", "Password must contain at least one text character.")
+            if not any(char.isdigit() for char in p1):
+                self.add_error("password1", "Password must contain at least one number.")
+            import string
+            if not any(char in string.punctuation for char in p1):
+                self.add_error("password1", "Password must contain at least one special symbol.")
         return cleaned
 
     def save(self):
+        import uuid
+        from .models import UserProfile
         data = self.cleaned_data
-        return User.objects.create_user(
-            username=data["username"],
-            email=data.get("email", ""),
+        base_username = data["email"].split("@")[0][:140]
+        username = f"{base_username}_{uuid.uuid4().hex[:4]}"
+        user = User.objects.create_user(
+            username=username,
+            email=data["email"],
             password=data["password1"],
+            first_name=data["name"]
         )
+        UserProfile.objects.create(user=user, dob=data.get("dob"))
+        return user
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(attrs={"placeholder": "Username", "autocomplete": "username"}),
+    email = forms.EmailField(
+        label="Email ID",
+        widget=forms.EmailInput(attrs={"placeholder": "Email ID", "autocomplete": "email"}),
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={"placeholder": "Password", "autocomplete": "current-password"}),
@@ -113,12 +132,12 @@ class LoginForm(forms.Form):
 
     def clean(self):
         cleaned = super().clean()
-        username = cleaned.get("username", "").strip()
+        email = cleaned.get("email", "").strip()
         password = cleaned.get("password", "")
-        if username and password:
-            self._user = authenticate(self.request, username=username, password=password)
+        if email and password:
+            self._user = authenticate(self.request, email=email, password=password)
             if self._user is None:
-                raise forms.ValidationError("Invalid username or password.")
+                raise forms.ValidationError("Invalid email ID or password.")
         return cleaned
 
     def get_user(self):

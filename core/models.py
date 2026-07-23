@@ -5,6 +5,14 @@ from django.db import models
 from pgvector.django import VectorField
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    dob = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} Profile"
+
+
 class ChatSession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Signed-in user — null for anonymous sessions
