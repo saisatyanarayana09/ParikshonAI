@@ -3,12 +3,11 @@
 <div class="workspace-container">
     <aside class="workspace-sidebar" id="workspace-sidebar">
 
-        {# ── Sidebar header containing ONLY menu icon ── #}
+        {# ── Sidebar header containing high-visibility Menu icon button ── #}
         <div class="sidebar-header">
-            <button class="sidebar-burger" id="sidebar-burger" data-sidebar-toggle aria-label="Toggle navigation" aria-expanded="true" title="Toggle Sections">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="sidebar-menu-btn" data-sidebar-toggle aria-label="Toggle navigation" title="Toggle Sections">
+                <span class="burger-icon">☰</span>
+                <span class="menu-label">Menu</span>
             </button>
         </div>
 
@@ -84,10 +83,9 @@
                 <h1>{% block workspace_title %}{% endblock %}</h1>
             </div>
 
-            {# ── Newly placed Brand Logo at Top Middle ── #}
+            {# ── Newly placed Brand Logo at Top Middle (without P icon) ── #}
             <div class="header-center">
                 <a class="brand" href="{% url 'core:home' %}">
-                    <span class="brand-mark">P</span>
                     <span class="brand-text">Parikshon AI</span>
                 </a>
             </div>
@@ -124,13 +122,11 @@
     const collapsed = localStorage.getItem('sidebar-nav-collapsed') === 'true';
     if (collapsed) {
         body.classList.add('nav-hidden');
-        toggles.forEach(t => t.classList.add('is-open'));
     }
 
     toggles.forEach(toggle => {
         toggle.addEventListener('click', () => {
             const isHidden = body.classList.toggle('nav-hidden');
-            toggles.forEach(t => t.classList.toggle('is-open', isHidden));
             localStorage.setItem('sidebar-nav-collapsed', isHidden);
         });
     });

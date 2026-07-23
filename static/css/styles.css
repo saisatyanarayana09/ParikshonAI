@@ -259,18 +259,47 @@ img { max-width: 100%; }
 }
 
 .sidebar-header {
-    padding: 1rem;
+    padding: 0.85rem 1rem;
     border-bottom: 3px solid var(--yellow);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 64px;
+    min-height: 60px;
+    background: var(--black);
 }
-.sidebar-header .brand-mark {
+
+.sidebar-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
     background: var(--yellow);
     color: var(--black);
-    box-shadow: none;
-    border-color: var(--yellow);
+    border: 2.5px solid var(--black);
+    box-shadow: 3px 3px 0 var(--white);
+    font-weight: 800;
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.sidebar-menu-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--white);
+    background: #FFEE66;
+}
+
+.sidebar-menu-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--white);
+}
+
+.sidebar-menu-btn .burger-icon {
+    font-size: 1.25rem;
+    line-height: 1;
 }
 
 .sidebar-nav {
