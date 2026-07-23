@@ -50,13 +50,6 @@ function setupSidebarToggle() {
     const sidebar = document.querySelector(".workspace-sidebar");
     if (!toggle || !sidebar) return;
 
-    // Only show toggle on mobile
-    const checkMobile = () => {
-        toggle.style.display = window.innerWidth <= 768 ? "flex" : "none";
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
     toggle.addEventListener("click", () => {
         sidebar.classList.toggle("sidebar-open");
     });
