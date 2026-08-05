@@ -1,5 +1,9 @@
 {% extends "workspace_base.html" %}
 {% block title %}JPG to PDF | Parikshon AI{% endblock %}
+{% block meta_tags %}
+<meta name="description" content="Convert your image files perfectly into PDF documents.">
+<meta name="keywords" content="jpg to pdf, image to pdf, convert images to pdf">
+{% endblock %}
 {% block workspace_content %}
 <div class="workspace-main" style="overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">JPG to PDF</h1>
@@ -19,19 +23,19 @@
         <div style="flex: 1; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow);">
             <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
                 {% csrf_token %}
-                <label style="font-weight: bold;">Upload File(s)</label>
+                <label style="font-weight: bold;">Upload File</label>
                 <input type="file" name="files" id="img-upload" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
-                <select name="orientation" id="img-ori" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                    <option value="portrait">Portrait</option>
-                    <option value="landscape">Landscape</option>
-                </select>
-                <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
-                <select name="margin" id="img-mar" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                    <option value="none">No Margin</option>
-                    <option value="small">Small Margin</option>
-                    <option value="large">Large Margin</option>
-                </select>
+        <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
+        <select name="orientation" id="img-ori" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+        </select>
+        <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
+        <select name="margin" id="img-mar" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="none">No Margin</option>
+            <option value="small">Small Margin</option>
+            <option value="large">Large Margin</option>
+        </select>
                 <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
             </form>
         </div>
@@ -52,7 +56,7 @@
         function updatePreview() {
             if (!imgEl.src) return;
 
-            const baseSize = 400; // max height or width for preview scaling
+            const baseSize = 400; 
             
             if (oriSelect.value === 'portrait') {
                 canvasBg.style.width = (baseSize / 1.414) + 'px';

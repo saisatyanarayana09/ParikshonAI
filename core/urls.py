@@ -1,12 +1,13 @@
 from django.urls import path
 
-from . import auth_views, views, utility_views
+from . import auth_views, views, utility_views, seo_views
 
 app_name = "core"
 
 urlpatterns = [
-    # Core workspace tools
     path("", views.home, name="home"),
+    path("robots.txt", seo_views.robots_txt, name="robots_txt"),
+    path("sitemap.xml", seo_views.sitemap_xml, name="sitemap_xml"),
     path("chat/", views.chat_view, name="chat"),
     path("ocr/", views.ocr_view, name="ocr"),
     path("keywords/", views.keywords_view, name="keywords"),
