@@ -1956,27 +1956,41 @@ img { max-width: 100%; }
     text-align: center;
 }
 @media (max-width: 600px) {
-    .tool-layout {
-        gap: 1rem;
+    .workspace-main {
+        padding: 0 !important;
+        overflow: hidden !important;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
     }
-    .tool-panel {
-        min-width: 100%;
-        padding: 1rem;
+    .tool-layout {
+        gap: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
     .tool-preview-panel {
         min-width: 100%;
+        flex: 0 0 40%;
         padding: 1rem;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        max-height: 50vh;
         overflow-y: auto;
+        border-bottom: var(--border-thick);
+        background: var(--surface);
     }
-    .workspace-main {
-        padding: 1rem !important;
+    .tool-panel {
+        min-width: 100%;
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        padding-bottom: 2rem;
     }
     .header-title {
-        font-size: 1.8rem !important;
+        font-size: 1.5rem !important;
+        margin-top: 0.5rem;
+    }
+    .header-description {
+        display: none;
     }
 }/* Retrieved document sections displayed beneath AI answers. */
 .answer-sources {
