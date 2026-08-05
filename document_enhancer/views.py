@@ -1,10 +1,6 @@
-import os
-import uuid
 import base64
 from django.shortcuts import render
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponseBadRequest
 from .services import process_document
 
 def enhancer_view(request):
@@ -17,25 +13,18 @@ def enhancer_view(request):
             image_bytes = file.read()
             processed_bytes = process_document(image_bytes)
             
-            # Save to MEDIA_ROOT
-            enhancements_dir = os.path.join(settings.MEDIA_ROOT, 'enhancements')
-            os.makedirs(enhancements_dir, exist_ok=True)
-            fs = FileSystemStorage(location=enhancements_dir)
+            # Convert both images to Base64 data URIs so they don't need to be saved to disk
+            # This completely bypasses the broken MEDIA_URL issue on production servers
+            orig_b64 = base64.b64encode(image_bytes).decode('utf-8')
+            enhanced_b64 = base64.b64encode(processed_bytes).decode('utf-8')
             
-            # Generate unique filenames
-            unique_id = uuid.uuid4().hex
-            orig_filename = f"orig_{unique_id}.jpg"
-            enhanced_filename = f"enhanced_{unique_id}.jpg"
+            # Determine mime type from original file, default to jpeg
+            content_type = file.content_type if file.content_type else 'image/jpeg'
+            # Force jpeg for the enhanced output since OpenCV service returns jpeg
+            enhanced_content_type = 'image/jpeg'
             
-            # We don't necessarily have to write the original, but requirements said "save both"
-            file.seek(0)
-            fs.save(orig_filename, file)
-            # Create a file-like object for the processed bytes
-            from django.core.files.base import ContentFile
-            enhanced_path = fs.save(enhanced_filename, ContentFile(processed_bytes))
-            
-            orig_url = f"{settings.MEDIA_URL}enhancements/{orig_filename}"
-            enhanced_url = f"{settings.MEDIA_URL}enhancements/{enhanced_path}"
+            orig_url = f"data:{content_type};base64,{orig_b64}"
+            enhanced_url = f"data:{enhanced_content_type};base64,{enhanced_b64}"
             
             return render(request, "document_enhancer/enhancer.html", {
                 "orig_url": orig_url,
