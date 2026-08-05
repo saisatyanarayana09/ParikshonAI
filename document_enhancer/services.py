@@ -63,57 +63,58 @@ def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: floa
 
     orig = image.copy()
     
-    # 2. Edge detection to find the document boundary
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # 2. Pad the image to ensure document edges form closed contours even if they touch the image border
+    pad = 10
+    padded = cv2.copyMakeBorder(image, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=[0, 0, 0])
+    
+    gray = cv2.cvtColor(padded, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
     edged = cv2.Canny(gray, 75, 200)
 
-    # 3. Find contours using RETR_EXTERNAL to only get the outermost bounds, ignoring inner tables
-    cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 3. Find all contours in the padded image
+    cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
     screenCnt = None
+    image_area = image.shape[0] * image.shape[1]
+    
     for c in cnts:
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
         
-        # if our approximated contour has four points, we can assume that we have found our screen
-        if len(approx) == 4:
-            screenCnt = approx
-            break
+        # A document must have 4 points, be convex, and take up at least 15% of the image
+        if len(approx) == 4 and cv2.isContourConvex(approx):
+            if cv2.contourArea(approx) > 0.15 * image_area:
+                # Un-pad the coordinates back to the original image space
+                screenCnt = approx - pad
+                break
 
     # 4. Perspective transform (Auto Crop & Deskew)
     if screenCnt is not None:
-        # We only auto-crop if the detected boundary is substantially large (> 30% of image)
-        # This prevents randomly cropping a small box if the image is already a flat scan
-        image_area = image.shape[0] * image.shape[1]
-        contour_area = cv2.contourArea(screenCnt)
-        if contour_area > 0.3 * image_area:
-            warped = four_point_transform(orig, screenCnt.reshape(4, 2))
-        else:
-            warped = orig
+        warped = four_point_transform(orig, screenCnt.reshape(4, 2))
     else:
         warped = orig
 
-    # 5. Color-preserving contrast enhancement and shadow reduction
-    # Convert the warped image to LAB color space
-    lab = cv2.cvtColor(warped, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
+    # 5. "Magic Color" Enhancement: Remove shadows and make background pure white while preserving color
+    warped_gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
     
-    # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization) to the L (Lightness) channel
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
-    cl = clahe.apply(l)
+    # Estimate the background illumination using morphological dilation
+    # This effectively erases the dark text, leaving only the paper's shadow profile
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25))
+    bg = cv2.dilate(warped_gray, kernel)
+    bg = cv2.GaussianBlur(bg, (21, 21), 0)
     
-    # Merge back and convert to BGR
-    limg = cv2.merge((cl, a, b))
-    final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-    # Optional: Light median blur to reduce noise
-    final = cv2.medianBlur(final, 3)
+    # Prevent division by zero
+    bg = np.maximum(bg, 1)
+    
+    warped_float = warped.astype(np.float32)
+    bg_bgr = cv2.cvtColor(bg, cv2.COLOR_GRAY2BGR).astype(np.float32)
+    
+    # Divide the image by its background to normalize lighting (shadows become white)
+    magic = np.clip((warped_float / bg_bgr) * 255, 0, 255).astype(np.uint8)
 
     # Convert back to PIL Image to apply granular enhancements
-    # final is already in BGR format, convert to RGB for PIL
-    pil_img = Image.fromarray(cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
+    pil_img = Image.fromarray(cv2.cvtColor(magic, cv2.COLOR_BGR2RGB))
     
     # Apply Sliders
     if brightness != 1.0:
