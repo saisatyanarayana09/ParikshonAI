@@ -1,0 +1,55 @@
+<!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    function initPdfPreview(fileInputId, canvasContainerId, canvasId, onRenderComplete = null) {
+        const fileInput = document.getElementById(fileInputId);
+        const canvasContainer = document.getElementById(canvasContainerId);
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    
+                    // Show the container
+                    canvasContainer.style.display = 'block';
+
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        return pdf.getPage(1);
+                    }).then(page => {
+                        const viewport = page.getViewport({ scale: 1.0 });
+                        
+                        // We want to scale it to fit nicely in our container (max width 500px)
+                        const desiredWidth = 500;
+                        const scale = desiredWidth / viewport.width;
+                        const scaledViewport = page.getViewport({ scale: scale });
+
+                        canvas.width = scaledViewport.width;
+                        canvas.height = scaledViewport.height;
+
+                        const renderContext = {
+                            canvasContext: ctx,
+                            viewport: scaledViewport
+                        };
+                        
+                        return page.render(renderContext).promise;
+                    }).then(() => {
+                        if (onRenderComplete) {
+                            onRenderComplete(canvas.width, canvas.height);
+                        }
+                    }).catch(err => {
+                        console.error('Error rendering PDF preview:', err);
+                    });
+                };
+                fileReader.readAsArrayBuffer(file);
+            } else {
+                canvasContainer.style.display = 'none';
+            }
+        });
+    }
+</script>

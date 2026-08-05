@@ -5,28 +5,87 @@
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Add Page Numbers</h1>
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Insert page numbers into your PDF.</p>
     
-    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
+    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; margin-bottom: 2rem;">
         <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
             {% csrf_token %}
-            <label style="font-weight: bold;">Upload File(s)</label>
-            <input type="file" name="file" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-        <label style="font-weight: bold; margin-top: 0.5rem;">Position</label>
-        <select name="position" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="bottom-center">Bottom Center</option>
-            <option value="bottom-left">Bottom Left</option>
-            <option value="bottom-right">Bottom Right</option>
-            <option value="top-center">Top Center</option>
-            <option value="top-left">Top Left</option>
-            <option value="top-right">Top Right</option>
-        </select>
-        <label style="font-weight: bold; margin-top: 0.5rem;">Format</label>
-        <select name="format_type" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="number">1</option>
-            <option value="page-n">Page 1</option>
-            <option value="n-of-m">Page 1 of X</option>
-        </select>
+            <label style="font-weight: bold;">Upload File</label>
+            <input type="file" name="file" id="pdf-upload" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <label style="font-weight: bold; margin-top: 0.5rem;">Position</label>
+            <select name="position" id="pn-pos" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="bottom-center">Bottom Center</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="bottom-right">Bottom Right</option>
+                <option value="top-center">Top Center</option>
+                <option value="top-left">Top Left</option>
+                <option value="top-right">Top Right</option>
+            </select>
+            <label style="font-weight: bold; margin-top: 0.5rem;">Format</label>
+            <select name="format_type" id="pn-format" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="number">1</option>
+                <option value="page-n">Page 1</option>
+                <option value="n-of-m">Page 1 of X</option>
+            </select>
             <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
         </form>
     </div>
+
+    <!-- Live Preview Container -->
+    <div id="preview-container" style="display: none; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; text-align: center;">
+        <h3 style="margin-bottom: 1rem;">Live Preview (First Page)</h3>
+        <div style="position: relative; display: inline-block; border: 1px solid var(--border-color); overflow: hidden;">
+            <canvas id="preview-canvas" style="display: block;"></canvas>
+            <div id="pn-overlay" style="position: absolute; font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: black; background: rgba(255,255,255,0.7); padding: 2px 4px; pointer-events: none;">
+            </div>
+        </div>
+    </div>
 </div>
+
+{% include 'core/utilities/preview_script.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initPdfPreview('pdf-upload', 'preview-container', 'preview-canvas', updatePageNumber);
+
+        const posSelect = document.getElementById('pn-pos');
+        const formatSelect = document.getElementById('pn-format');
+        const overlay = document.getElementById('pn-overlay');
+        const canvas = document.getElementById('preview-canvas');
+
+        function updatePageNumber() {
+            if (!canvas.width) return;
+            
+            const format = formatSelect.value;
+            if (format === 'number') overlay.innerText = '1';
+            else if (format === 'page-n') overlay.innerText = 'Page 1';
+            else if (format === 'n-of-m') overlay.innerText = 'Page 1 of X';
+
+            // Reset positioning
+            overlay.style.top = 'auto';
+            overlay.style.bottom = 'auto';
+            overlay.style.left = 'auto';
+            overlay.style.right = 'auto';
+            overlay.style.transform = 'none';
+
+            const pos = posSelect.value;
+            const margin = '15px';
+            
+            if (pos.includes('top')) {
+                overlay.style.top = margin;
+            } else {
+                overlay.style.bottom = margin;
+            }
+            
+            if (pos.includes('left')) {
+                overlay.style.left = margin;
+            } else if (pos.includes('right')) {
+                overlay.style.right = margin;
+            } else {
+                overlay.style.left = '50%';
+                overlay.style.transform = 'translateX(-50%)';
+            }
+        }
+
+        posSelect.addEventListener('change', updatePageNumber);
+        formatSelect.addEventListener('change', updatePageNumber);
+    });
+</script>
 {% endblock %}

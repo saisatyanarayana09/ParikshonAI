@@ -5,25 +5,59 @@
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Rotate PDF</h1>
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Rotate the pages in your PDF document.</p>
     
-    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
+    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; margin-bottom: 2rem;">
         <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
             {% csrf_token %}
-            <label style="font-weight: bold;">Upload File(s)</label>
-            <input type="file" name="file" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-        <label style="font-weight: bold; margin-top: 0.5rem;">Degrees</label>
-        <select name="degrees" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="90">90 Degrees (Right)</option>
-            <option value="180">180 Degrees (Upside Down)</option>
-            <option value="270">270 Degrees (Left)</option>
-        </select>
-        <label style="font-weight: bold; margin-top: 0.5rem;">Apply To</label>
-        <select name="apply_to" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="all">All Pages</option>
-            <option value="even">Even Pages Only</option>
-            <option value="odd">Odd Pages Only</option>
-        </select>
+            <label style="font-weight: bold;">Upload File</label>
+            <input type="file" name="file" id="pdf-upload" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <label style="font-weight: bold; margin-top: 0.5rem;">Degrees</label>
+            <select name="degrees" id="rot-deg" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="90">90 Degrees (Right)</option>
+                <option value="180">180 Degrees (Upside Down)</option>
+                <option value="270">270 Degrees (Left)</option>
+            </select>
+            <label style="font-weight: bold; margin-top: 0.5rem;">Apply To</label>
+            <select name="apply_to" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="all">All Pages</option>
+                <option value="even">Even Pages Only</option>
+                <option value="odd">Odd Pages Only</option>
+            </select>
             <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
         </form>
     </div>
+
+    <!-- Live Preview Container -->
+    <div id="preview-container" style="display: none; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; text-align: center;">
+        <h3 style="margin-bottom: 1rem;">Live Preview (First Page)</h3>
+        <div style="position: relative; display: inline-block; border: 1px solid var(--border-color); overflow: hidden; padding: 20px;">
+            <canvas id="preview-canvas" style="display: block; transition: transform 0.3s ease;"></canvas>
+        </div>
+    </div>
 </div>
+
+{% include 'core/utilities/preview_script.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initPdfPreview('pdf-upload', 'preview-container', 'preview-canvas', updateRotation);
+
+        const degSelect = document.getElementById('rot-deg');
+        const canvas = document.getElementById('preview-canvas');
+
+        function updateRotation() {
+            if (!canvas.width) return;
+            const deg = degSelect.value;
+            canvas.style.transform = `rotate(${deg}deg)`;
+            
+            // Adjust margin to prevent canvas clipping if it's portrait and rotated to landscape
+            if (deg === '90' || deg === '270') {
+                const diff = (canvas.width - canvas.height) / 2;
+                canvas.style.margin = `${Math.abs(diff)}px 0`;
+            } else {
+                canvas.style.margin = '0';
+            }
+        }
+
+        degSelect.addEventListener('change', updateRotation);
+    });
+</script>
 {% endblock %}

@@ -5,24 +5,88 @@
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">JPG to PDF</h1>
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Convert your image files perfectly into PDF documents.</p>
     
-    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
+    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; margin-bottom: 2rem;">
         <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
             {% csrf_token %}
             <label style="font-weight: bold;">Upload File(s)</label>
-            <input type="file" name="files" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-        <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
-        <select name="orientation" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="portrait">Portrait</option>
-            <option value="landscape">Landscape</option>
-        </select>
-        <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
-        <select name="margin" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <option value="none">No Margin</option>
-            <option value="small">Small Margin</option>
-            <option value="large">Large Margin</option>
-        </select>
+            <input type="file" name="files" id="img-upload" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
+            <select name="orientation" id="img-ori" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+            </select>
+            <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
+            <select name="margin" id="img-mar" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <option value="none">No Margin</option>
+                <option value="small">Small Margin</option>
+                <option value="large">Large Margin</option>
+            </select>
             <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
         </form>
     </div>
+
+    <!-- Live Preview Container -->
+    <div id="preview-container" style="display: none; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; text-align: center;">
+        <h3 style="margin-bottom: 1rem;">Live Preview (First Image)</h3>
+        <div id="canvas-bg" style="position: relative; display: inline-flex; align-items: center; justify-content: center; background: white; border: 1px solid var(--border-color); overflow: hidden; transition: width 0.3s, height 0.3s;">
+            <img id="preview-img" style="max-width: 100%; max-height: 100%; transition: padding 0.3s;" src="" />
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('img-upload');
+        const container = document.getElementById('preview-container');
+        const canvasBg = document.getElementById('canvas-bg');
+        const imgEl = document.getElementById('preview-img');
+        
+        const oriSelect = document.getElementById('img-ori');
+        const marSelect = document.getElementById('img-mar');
+
+        function updatePreview() {
+            if (!imgEl.src) return;
+
+            // A4 Aspect Ratios
+            // Portrait: 1 : 1.414
+            const baseSize = 400; // max height or width for preview scaling
+            
+            if (oriSelect.value === 'portrait') {
+                canvasBg.style.width = (baseSize / 1.414) + 'px';
+                canvasBg.style.height = baseSize + 'px';
+            } else {
+                canvasBg.style.width = baseSize + 'px';
+                canvasBg.style.height = (baseSize / 1.414) + 'px';
+            }
+
+            const margin = marSelect.value;
+            if (margin === 'none') {
+                imgEl.style.padding = '0';
+            } else if (margin === 'small') {
+                imgEl.style.padding = '15px';
+            } else if (margin === 'large') {
+                imgEl.style.padding = '35px';
+            }
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imgEl.src = event.target.result;
+                    container.style.display = 'block';
+                    updatePreview();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                container.style.display = 'none';
+                imgEl.src = '';
+            }
+        });
+
+        oriSelect.addEventListener('change', updatePreview);
+        marSelect.addEventListener('change', updatePreview);
+    });
+</script>
 {% endblock %}
