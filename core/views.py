@@ -19,7 +19,7 @@ ANON_CHAT_LIMIT = 5
 
 
 def home(request):
-    return redirect("core:chat")
+    return render(request, "core/home.html")
 
 
 def _extract_from_upload(uploaded_file):
@@ -140,13 +140,14 @@ def chat_view(request):
         if form.is_valid():
             history = [(m.question, m.answer) for m in active_session.messages.all()]
             try:
-                answer = answer_question(
+                answer, sources = answer_question(
                     active_session, form.cleaned_data["question"], history
                 )
                 ChatMessage.objects.create(
                     session=active_session,
                     question=form.cleaned_data["question"],
                     answer=answer,
+                    sources=sources,
                 )
                 active_session.save(update_fields=["updated_at"])
 
@@ -159,6 +160,7 @@ def chat_view(request):
                     return JsonResponse({
                         "success": True, 
                         "answer": answer,
+                        "sources": sources,
                         "limit_reached": (is_anon and request.session["anon_chat_count"] >= ANON_CHAT_LIMIT)
                     })
 

@@ -52,8 +52,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "parikshon_ai.wsgi.application"
 
-# ── Database Updated for Supabase & Render ──────────────────────────────────
-# This looks for a DATABASE_URL variable. If not found, it falls back to a local sqlite3 database.
+# ── Database ────────────────────────────────────────────────────────────────
+# PostgreSQL is REQUIRED for this project due to pgvector dependency.
+# This looks for a DATABASE_URL variable. If not found, it falls back to a local postgres database.
+# Note: SQLite cannot be used because it does not support VectorField.
 DATABASES = {
     "default": dj_database_url.config(
         default=os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),

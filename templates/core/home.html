@@ -1,0 +1,102 @@
+{% extends "workspace_base.html" %}
+
+{% block title %}Home | Parikshon AI{% endblock %}
+
+{% block content %}
+<div class="workspace-main">
+    <div class="scroll-container">
+        <header class="chat-header" style="justify-content: center; text-align: center; padding: 2rem;">
+            <div>
+                <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Parikshon AI Toolkit</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Select a tool below to get started</p>
+            </div>
+        </header>
+        
+        <div class="content-scroll" style="padding: 2rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+                
+                <!-- Chat Card -->
+                <a href="{% url 'core:chat' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">💬</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Chat with PDF</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Ask questions and interact with your document instantly.</p>
+                </a>
+
+                <!-- OCR Card -->
+                <a href="{% url 'core:ocr' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔍</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">OCR Extractor</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Extract raw text from scanned PDFs or images easily.</p>
+                </a>
+
+                <!-- Keywords Card -->
+                <a href="{% url 'core:keywords' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔑</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Keywords</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Analyze your document for top topics and key phrases.</p>
+                </a>
+
+                <!-- Quiz Card -->
+                <a href="{% url 'core:quiz' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">📝</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Quiz Generator</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Automatically generate interactive quizzes to test knowledge.</p>
+                </a>
+                
+            </div>
+            
+            <div style="max-width: 1200px; margin: 4rem auto 1rem;">
+                <h2 class="header-title" style="text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem; border-top: var(--border); padding-top: 2rem;">PDF Utilities (Coming Soon)</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; opacity: 0.6;">
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗂️</span>
+                        <h4 style="font-size: 1.2rem;">Merge PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">✂️</span>
+                        <h4 style="font-size: 1.2rem;">Split PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🖼️</span>
+                        <h4 style="font-size: 1.2rem;">JPG to PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📄</span>
+                        <h4 style="font-size: 1.2rem;">PDF to JPG</h4>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    .tool-card {
+        text-decoration: none !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        border: var(--border-thick);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        color: var(--text);
+        cursor: pointer;
+    }
+    
+    .tool-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent);
+    }
+</style>
+{% endblock %}
