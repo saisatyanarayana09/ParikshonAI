@@ -5,32 +5,37 @@
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">JPG to PDF</h1>
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Convert your image files perfectly into PDF documents.</p>
     
-    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; margin-bottom: 2rem;">
-        <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            {% csrf_token %}
-            <label style="font-weight: bold;">Upload File(s)</label>
-            <input type="file" name="files" id="img-upload" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
-            <select name="orientation" id="img-ori" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                <option value="portrait">Portrait</option>
-                <option value="landscape">Landscape</option>
-            </select>
-            <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
-            <select name="margin" id="img-mar" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                <option value="none">No Margin</option>
-                <option value="small">Small Margin</option>
-                <option value="large">Large Margin</option>
-            </select>
-            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
-        </form>
-    </div>
-
-    <!-- Live Preview Container -->
-    <div id="preview-container" style="display: none; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; text-align: center;">
-        <h3 style="margin-bottom: 1rem;">Live Preview (First Image)</h3>
-        <div id="canvas-bg" style="position: relative; display: inline-flex; align-items: center; justify-content: center; background: white; border: 1px solid var(--border-color); overflow: hidden; transition: width 0.3s, height 0.3s;">
-            <img id="preview-img" style="max-width: 100%; max-height: 100%; transition: padding 0.3s;" src="" />
+    <div style="display: flex; gap: 2rem; width: 100%; max-width: 1200px; align-items: flex-start; flex-wrap: wrap;">
+        
+        <!-- Left Side: Live Preview Container -->
+        <div id="preview-container" style="display: none; flex: 1.5; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); text-align: center;">
+            <h3 style="margin-bottom: 1rem;">Live Preview (First Image)</h3>
+            <div id="canvas-bg" style="position: relative; display: inline-flex; align-items: center; justify-content: center; background: white; border: 1px solid var(--border-color); overflow: hidden; transition: width 0.3s, height 0.3s; max-width: 100%;">
+                <img id="preview-img" style="max-width: 100%; max-height: 100%; transition: padding 0.3s;" src="" />
+            </div>
         </div>
+
+        <!-- Right Side: Form Options -->
+        <div style="flex: 1; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow);">
+            <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                {% csrf_token %}
+                <label style="font-weight: bold;">Upload File(s)</label>
+                <input type="file" name="files" id="img-upload" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
+                <select name="orientation" id="img-ori" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+                <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
+                <select name="margin" id="img-mar" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                    <option value="none">No Margin</option>
+                    <option value="small">Small Margin</option>
+                    <option value="large">Large Margin</option>
+                </select>
+                <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
+            </form>
+        </div>
+
     </div>
 </div>
 
@@ -47,8 +52,6 @@
         function updatePreview() {
             if (!imgEl.src) return;
 
-            // A4 Aspect Ratios
-            // Portrait: 1 : 1.414
             const baseSize = 400; // max height or width for preview scaling
             
             if (oriSelect.value === 'portrait') {

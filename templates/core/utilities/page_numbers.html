@@ -5,38 +5,43 @@
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Add Page Numbers</h1>
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Insert page numbers into your PDF.</p>
     
-    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; margin-bottom: 2rem;">
-        <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            {% csrf_token %}
-            <label style="font-weight: bold;">Upload File</label>
-            <input type="file" name="file" id="pdf-upload" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-            <label style="font-weight: bold; margin-top: 0.5rem;">Position</label>
-            <select name="position" id="pn-pos" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                <option value="bottom-center">Bottom Center</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="bottom-right">Bottom Right</option>
-                <option value="top-center">Top Center</option>
-                <option value="top-left">Top Left</option>
-                <option value="top-right">Top Right</option>
-            </select>
-            <label style="font-weight: bold; margin-top: 0.5rem;">Format</label>
-            <select name="format_type" id="pn-format" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
-                <option value="number">1</option>
-                <option value="page-n">Page 1</option>
-                <option value="n-of-m">Page 1 of X</option>
-            </select>
-            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
-        </form>
-    </div>
-
-    <!-- Live Preview Container -->
-    <div id="preview-container" style="display: none; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); width: 100%; max-width: 600px; text-align: center;">
-        <h3 style="margin-bottom: 1rem;">Live Preview (First Page)</h3>
-        <div style="position: relative; display: inline-block; border: 1px solid var(--border-color); overflow: hidden;">
-            <canvas id="preview-canvas" style="display: block;"></canvas>
-            <div id="pn-overlay" style="position: absolute; font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: black; background: rgba(255,255,255,0.7); padding: 2px 4px; pointer-events: none;">
+    <div style="display: flex; gap: 2rem; width: 100%; max-width: 1200px; align-items: flex-start; flex-wrap: wrap;">
+        
+        <!-- Left Side: Live Preview Container -->
+        <div id="preview-container" style="display: none; flex: 1.5; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 1rem; box-shadow: var(--shadow); text-align: center;">
+            <h3 style="margin-bottom: 1rem;">Live Preview (First Page)</h3>
+            <div style="position: relative; display: inline-block; border: 1px solid var(--border-color); overflow: hidden; max-width: 100%;">
+                <canvas id="preview-canvas" style="display: block; max-width: 100%;"></canvas>
+                <div id="pn-overlay" style="position: absolute; font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: black; background: rgba(255,255,255,0.7); padding: 2px 4px; pointer-events: none;">
+                </div>
             </div>
         </div>
+
+        <!-- Right Side: Form Options -->
+        <div style="flex: 1; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow);">
+            <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                {% csrf_token %}
+                <label style="font-weight: bold;">Upload File</label>
+                <input type="file" name="file" id="pdf-upload" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                <label style="font-weight: bold; margin-top: 0.5rem;">Position</label>
+                <select name="position" id="pn-pos" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                    <option value="bottom-center">Bottom Center</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right">Bottom Right</option>
+                    <option value="top-center">Top Center</option>
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right">Top Right</option>
+                </select>
+                <label style="font-weight: bold; margin-top: 0.5rem;">Format</label>
+                <select name="format_type" id="pn-format" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+                    <option value="number">1</option>
+                    <option value="page-n">Page 1</option>
+                    <option value="n-of-m">Page 1 of X</option>
+                </select>
+                <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
+            </form>
+        </div>
+
     </div>
 </div>
 
