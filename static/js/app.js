@@ -216,9 +216,15 @@ async function submitChatAJAX(form) {
 
             const bubble = document.createElement('article');
             bubble.className = 'chat-bubble ai-bubble';
+            const sourcesHTML = (data.sources || []).length ? `
+                <details class="answer-sources">
+                    <summary>Sources used (${data.sources.length})</summary>
+                    <ul>${data.sources.map(source => `<li><strong>${escapeHTML(source.label)}</strong><br><span>${escapeHTML(source.excerpt)}</span></li>`).join('')}</ul>
+                </details>` : '';
             bubble.innerHTML = `
                 <span class="bubble-label">Parikshon AI</span>
                 <div class="ai-answer-body">${renderMarkdown(data.answer)}</div>
+                ${sourcesHTML}
                 <div class="message-tools">
                     <button type="button" data-copy-nearest>Copy</button>
                 </div>

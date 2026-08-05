@@ -40,7 +40,7 @@ Important frontend files:
 The backend is built with:
 
 - Django 4
-- MySQL
+- PostgreSQL (with pgvector for vector embeddings)
 - Python
 - LangChain
 - Hugging Face Inference Providers (Qwen 2.5 7B Instruct)
@@ -278,7 +278,7 @@ Example environment file:
 
 ## Local Setup
 
-Recommended setup:
+Recommended setup (Requires a running PostgreSQL instance with the `pgvector` extension):
 
 ```bash
 python -m venv .venv

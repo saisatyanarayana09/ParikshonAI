@@ -76,7 +76,7 @@ def build_document_index(text: str, session) -> int:
 from pgvector.django import CosineDistance
 
 
-def answer_question(session, question: str, history: list[tuple[str, str]]) -> str:
+def answer_question(session, question: str, history: list[tuple[str, str]]) -> tuple[str, list[dict]]:
     api_key = _require_huggingface_key()
     if not session.chunks.exists():
         raise ChatError("Document index was not found. Upload the document again.")
@@ -95,10 +95,18 @@ def answer_question(session, question: str, history: list[tuple[str, str]]) -> s
             return (
                 "🎯 That question doesn't seem to be related to the uploaded document. "
                 "I'm Parikshon AI — a study assistant designed to help you understand your documents. "
-                "Please ask questions about the content you've uploaded!"
+                "Please ask questions about the content you've uploaded!",
+                [],
             )
 
         context = "\n\n".join(chunk.content for chunk in ranked_chunks)
+        sources = [
+            {
+                "label": f"Document section {chunk.chunk_index + 1}",
+                "excerpt": " ".join(chunk.content.split())[:180],
+            }
+            for chunk in ranked_chunks
+        ]
         recent_history = "\n".join(
             f"User: {user_message}\nAssistant: {ai_message}"
             for user_message, ai_message in history[-6:]
@@ -134,4 +142,5 @@ def answer_question(session, question: str, history: list[tuple[str, str]]) -> s
         raise ChatError(f"Document chat failed: {exc}") from exc
 
     content = result.choices[0].message.content
-    return (content or "🎯 Please ask questions related to your uploaded document. I am Parikshon AI, your study assistant!").strip()
+    answer = (content or "🎯 Please ask questions related to your uploaded document. I am Parikshon AI, your study assistant!").strip()
+    return answer, sources

@@ -59,6 +59,7 @@ class ChatMessage(models.Model):
     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name="messages")
     question = models.TextField()
     answer = models.TextField()
+    sources = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

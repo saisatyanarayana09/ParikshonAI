@@ -31,6 +31,16 @@
                     <article class="chat-bubble ai-bubble">
                         <span class="bubble-label">Parikshon AI</span>
                         <div class="ai-answer-body">{% autoescape off %}{{ message.answer|linebreaksbr }}{% endautoescape %}</div>
+                        {% if message.sources %}
+                            <details class="answer-sources">
+                                <summary>Sources used ({{ message.sources|length }})</summary>
+                                <ul>
+                                    {% for source in message.sources %}
+                                        <li><strong>{{ source.label }}</strong><br><span>{{ source.excerpt }}</span></li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        {% endif %}
                         <div class="message-tools">
                             <button type="button" data-copy-nearest>Copy</button>
                             <button type="button">Good</button>
