@@ -15,34 +15,34 @@
         </header>
         
         <div class="content-scroll" style="padding: 2rem;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto;">
                 
                 <!-- Chat Card -->
                 <a href="{% url 'core:chat' %}" class="message user-message tool-card">
-                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">💬</span>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Chat with PDF</h3>
-                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Ask questions and interact with your document instantly.</p>
+                    <span style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block;">💬</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Chat with PDF</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">Ask questions and interact with your document instantly.</p>
                 </a>
 
                 <!-- OCR Card -->
                 <a href="{% url 'core:ocr' %}" class="message user-message tool-card">
-                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔍</span>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">OCR Extractor</h3>
-                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Extract raw text from scanned PDFs or images easily.</p>
+                    <span style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block;">🔍</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">OCR Extractor</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">Extract raw text from scanned PDFs or images easily.</p>
                 </a>
 
                 <!-- Keywords Card -->
                 <a href="{% url 'core:keywords' %}" class="message user-message tool-card">
-                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔑</span>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Keywords</h3>
-                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Analyze your document for top topics and key phrases.</p>
+                    <span style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block;">🔑</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Keywords</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">Analyze your document for top topics and key phrases.</p>
                 </a>
 
                 <!-- Quiz Card -->
                 <a href="{% url 'core:quiz' %}" class="message user-message tool-card">
-                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">📝</span>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Quiz Generator</h3>
-                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Automatically generate interactive quizzes to test knowledge.</p>
+                    <span style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block;">📝</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Quiz Generator</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">Automatically generate interactive quizzes to test knowledge.</p>
                 </a>
                 
             </div>
@@ -91,7 +91,7 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 2.5rem 1.5rem;
+        padding: 1.5rem;
         border: var(--border-thick);
         background: var(--surface);
         box-shadow: var(--shadow);
