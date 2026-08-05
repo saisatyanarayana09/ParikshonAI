@@ -1959,9 +1959,18 @@ img { max-width: 100%; }
     .tool-layout {
         gap: 1rem;
     }
-    .tool-panel, .tool-preview-panel {
+    .tool-panel {
         min-width: 100%;
         padding: 1rem;
+    }
+    .tool-preview-panel {
+        min-width: 100%;
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        max-height: 50vh;
+        overflow-y: auto;
     }
     .workspace-main {
         padding: 1rem !important;
