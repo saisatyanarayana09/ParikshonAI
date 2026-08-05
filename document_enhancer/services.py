@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 def order_points(pts):
     # Initialzie a list of coordinates that will be ordered
@@ -50,9 +50,9 @@ def four_point_transform(image, pts):
     
     return warped
 
-def process_document(image_bytes: bytes) -> bytes:
+def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: float = 1.0, saturation: float = 1.0) -> bytes:
     """
-    Takes an image in bytes, applies the enhancement pipeline,
+    Takes an image in bytes, applies the enhancement pipeline and adjustments,
     and returns the enhanced image in bytes (JPEG).
     """
     # 1. Read image from bytes
@@ -112,9 +112,24 @@ def process_document(image_bytes: bytes) -> bytes:
     # Optional: Light median blur to reduce noise
     T = cv2.medianBlur(T, 3)
 
-    # Convert back to PIL Image to save as bytes
-    # T is currently a grayscale numpy array
-    pil_img = Image.fromarray(T)
+    # Convert back to PIL Image to apply granular enhancements
+    # T is currently a grayscale numpy array, but we need RGB to adjust saturation
+    T_bgr = cv2.cvtColor(T, cv2.COLOR_GRAY2BGR)
+    pil_img = Image.fromarray(cv2.cvtColor(T_bgr, cv2.COLOR_BGR2RGB))
+    
+    # Apply Sliders
+    if brightness != 1.0:
+        enhancer = ImageEnhance.Brightness(pil_img)
+        pil_img = enhancer.enhance(brightness)
+        
+    if contrast != 1.0:
+        enhancer = ImageEnhance.Contrast(pil_img)
+        pil_img = enhancer.enhance(contrast)
+        
+    if saturation != 1.0:
+        enhancer = ImageEnhance.Color(pil_img)
+        pil_img = enhancer.enhance(saturation)
+
     out_io = BytesIO()
     # Save as highly compressed PNG or high-quality JPEG
     pil_img.save(out_io, format='JPEG', quality=90)

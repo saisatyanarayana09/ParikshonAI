@@ -26,34 +26,32 @@
     <h1 class="header-title" style="text-align: center;">Smart Document Enhancement ✨</h1>
     <p class="header-description" style="color: var(--text-muted); margin-bottom: 2rem; text-align: center;">Automatically crop, remove shadows, enhance contrast, and sharpen text in one click.</p>
     
-    {% if error %}
-    <div style="background: var(--red); color: white; padding: 1rem; margin-bottom: 2rem; border-radius: var(--radius); text-align: center;">
+    <div id="error-container" style="display: {% if error %}block{% else %}none{% endif %}; background: var(--red); color: white; padding: 1rem; margin-bottom: 2rem; border-radius: var(--radius); text-align: center;">
         {{ error }}
     </div>
-    {% endif %}
 
     <div class="tool-layout">
         
         <!-- Left Side: Result Preview -->
         <div class="tool-preview-panel">
-            {% if enhanced_url %}
-                <h3 style="margin-bottom: 1rem;">Before vs After</h3>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <span style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Original</span>
-                        <img src="{{ orig_url }}" alt="Original Image" style="max-width: 100%; border: var(--border-thick);">
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <span style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--green);">Enhanced</span>
-                        <img src="{{ enhanced_url }}" alt="Enhanced Image" style="max-width: 100%; border: var(--border-thick);">
-                    </div>
+            <h3 style="margin-bottom: 1rem;" id="preview-header">
+                {% if enhanced_url %}Before vs After{% else %}Preview will appear here{% endif %}
+            </h3>
+            
+            <div id="preview-images" style="display: {% if enhanced_url %}flex{% else %}none{% endif %}; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <div style="flex: 1; min-width: 200px;">
+                    <span style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Original</span>
+                    <img id="orig-img" src="{{ orig_url|default:'' }}" alt="Original Image" style="max-width: 100%; border: var(--border-thick);">
                 </div>
-            {% else %}
-                <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Preview will appear here</h3>
-                <div style="width: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--border-color); color: var(--text-muted);">
-                    Upload an image to see the magic
+                <div style="flex: 1; min-width: 200px;">
+                    <span style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--green);">Enhanced</span>
+                    <img id="enhanced-img" src="{{ enhanced_url|default:'' }}" alt="Enhanced Image" style="max-width: 100%; border: var(--border-thick);">
                 </div>
-            {% endif %}
+            </div>
+            
+            <div id="preview-placeholder" style="display: {% if enhanced_url %}none{% else %}flex{% endif %}; width: 100%; min-height: 300px; align-items: center; justify-content: center; border: 2px dashed var(--border-color); color: var(--text-muted);">
+                Upload an image to see the magic
+            </div>
         </div>
 
         <!-- Right Side: Upload Form -->
@@ -61,7 +59,20 @@
             <form method="POST" enctype="multipart/form-data" class="tool-form" id="enhancer-form">
                 {% csrf_token %}
                 <label class="form-label" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">Select Document Image</label>
-                <input type="file" name="image" accept="image/*" required style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%; margin-bottom: 1rem;">
+                <input type="file" name="image" id="image-input" accept="image/*" required style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%; margin-bottom: 1rem;">
+                
+                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem; border: 1px solid var(--border-color);">
+                    <h4 style="margin-bottom: 1rem;">Adjustments</h4>
+                    
+                    <label style="display: block; margin-bottom: 0.2rem; font-size: 0.9rem;">Brightness: <span id="brightness-val">1.0</span></label>
+                    <input type="range" name="brightness" id="brightness" min="0.0" max="2.0" step="0.1" value="1.0" style="width: 100%; margin-bottom: 1rem;" oninput="document.getElementById('brightness-val').innerText = this.value">
+                    
+                    <label style="display: block; margin-bottom: 0.2rem; font-size: 0.9rem;">Contrast: <span id="contrast-val">1.0</span></label>
+                    <input type="range" name="contrast" id="contrast" min="0.0" max="2.0" step="0.1" value="1.0" style="width: 100%; margin-bottom: 1rem;" oninput="document.getElementById('contrast-val').innerText = this.value">
+                    
+                    <label style="display: block; margin-bottom: 0.2rem; font-size: 0.9rem;">Saturation: <span id="saturation-val">1.0</span></label>
+                    <input type="range" name="saturation" id="saturation" min="0.0" max="2.0" step="0.1" value="1.0" style="width: 100%;" oninput="document.getElementById('saturation-val').innerText = this.value">
+                </div>
                 
                 <button type="submit" class="primary-btn" id="submit-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                     <span id="btn-text">Enhance Document</span>
@@ -69,11 +80,9 @@
                 </button>
             </form>
             
-            {% if enhanced_url %}
-            <div style="margin-top: 2rem; border-top: var(--border-thick); padding-top: 2rem; text-align: center;">
-                <a href="{{ download_url }}" download="enhanced_document.jpg" class="primary-btn" style="display: inline-block; padding: 1rem 2rem; text-decoration: none; background: var(--green); color: var(--black);">⬇️ Download Clean Image</a>
+            <div id="download-container" style="display: {% if enhanced_url %}block{% else %}none{% endif %}; margin-top: 2rem; border-top: var(--border-thick); padding-top: 2rem; text-align: center;">
+                <a href="{{ download_url|default:'#' }}" id="download-btn" download="enhanced_document.jpg" class="primary-btn" style="display: inline-block; padding: 1rem 2rem; text-decoration: none; background: var(--green); color: var(--black);">⬇️ Download Clean Image</a>
             </div>
-            {% endif %}
         </div>
 
     </div>
@@ -83,11 +92,59 @@
 @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 <script>
-    document.getElementById('enhancer-form').addEventListener('submit', function() {
-        document.getElementById('btn-text').innerText = 'Processing...';
-        document.getElementById('loader').style.display = 'inline-block';
-        document.getElementById('submit-btn').disabled = true;
-        document.getElementById('submit-btn').style.opacity = '0.7';
+    document.getElementById('enhancer-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent full page reload
+        
+        const form = this;
+        const btnText = document.getElementById('btn-text');
+        const loader = document.getElementById('loader');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorContainer = document.getElementById('error-container');
+        
+        btnText.innerText = 'Processing...';
+        loader.style.display = 'inline-block';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        errorContainer.style.display = 'none';
+        
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(result => {
+            if (result.status !== 200) {
+                throw new Error(result.body.error || 'Failed to process image');
+            }
+            
+            // Update UI dynamically
+            document.getElementById('preview-header').innerText = 'Before vs After';
+            document.getElementById('preview-placeholder').style.display = 'none';
+            document.getElementById('preview-images').style.display = 'flex';
+            
+            document.getElementById('orig-img').src = result.body.orig_url;
+            document.getElementById('enhanced-img').src = result.body.enhanced_url;
+            
+            const downloadContainer = document.getElementById('download-container');
+            const downloadBtn = document.getElementById('download-btn');
+            downloadContainer.style.display = 'block';
+            downloadBtn.href = result.body.download_url;
+        })
+        .catch(error => {
+            errorContainer.innerText = error.message;
+            errorContainer.style.display = 'block';
+        })
+        .finally(() => {
+            btnText.innerText = 'Enhance Document';
+            loader.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        });
     });
 </script>
 {% endblock %}
