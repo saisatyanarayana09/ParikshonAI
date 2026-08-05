@@ -48,33 +48,68 @@
             </div>
             
             <div style="max-width: 1200px; margin: 4rem auto 1rem;">
-                <h2 class="header-title" style="text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem; border-top: var(--border); padding-top: 2rem;">PDF Utilities (Coming Soon)</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; opacity: 0.6;">
+                <h2 class="header-title" style="text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem; border-top: var(--border); padding-top: 2rem;">PDF Utilities</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
                     
-                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                    <a href="{% url 'core:merge_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗂️</span>
                         <h4 style="font-size: 1.2rem;">Merge PDF</h4>
-                    </div>
+                    </a>
                     
-                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                    <a href="{% url 'core:split_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">✂️</span>
                         <h4 style="font-size: 1.2rem;">Split PDF</h4>
-                    </div>
+                    </a>
                     
-                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                    <a href="{% url 'core:jpg_to_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🖼️</span>
                         <h4 style="font-size: 1.2rem;">JPG to PDF</h4>
-                    </div>
+                    </a>
                     
-                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                    <a href="{% url 'core:pdf_to_jpg' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📄</span>
                         <h4 style="font-size: 1.2rem;">PDF to JPG</h4>
-                    </div>
+                    </a>
                     
-                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                    <a href="{% url 'core:protect_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔒</span>
                         <h4 style="font-size: 1.2rem;">Protect PDF</h4>
-                    </div>
+                    </a>
+
+                    <a href="{% url 'core:unlock_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔓</span>
+                        <h4 style="font-size: 1.2rem;">Unlock PDF</h4>
+                    </a>
+
+                    <a href="{% url 'core:rotate_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔄</span>
+                        <h4 style="font-size: 1.2rem;">Rotate PDF</h4>
+                    </a>
+
+                    <a href="{% url 'core:remove_pages' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗑️</span>
+                        <h4 style="font-size: 1.2rem;">Remove Pages</h4>
+                    </a>
+
+                    <a href="{% url 'core:pdf_to_text' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📝</span>
+                        <h4 style="font-size: 1.2rem;">PDF to Text</h4>
+                    </a>
+
+                    <a href="{% url 'core:watermark_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">©️</span>
+                        <h4 style="font-size: 1.2rem;">Watermark</h4>
+                    </a>
+
+                    <a href="{% url 'core:page_numbers' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔢</span>
+                        <h4 style="font-size: 1.2rem;">Page Numbers</h4>
+                    </a>
+
+                    <a href="{% url 'core:compress_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗜️</span>
+                        <h4 style="font-size: 1.2rem;">Compress PDF</h4>
+                    </a>
                     
                 </div>
             </div>

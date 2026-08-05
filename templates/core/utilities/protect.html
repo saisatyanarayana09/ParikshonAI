@@ -1,0 +1,16 @@
+{% extends "workspace_base.html" %}
+{% block title %}Protect PDF | Parikshon AI{% endblock %}
+{% block workspace_content %}
+<div class="workspace-main" style="overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
+    <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Protect PDF</h1>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Secure your PDF documents with a strong password encryption.</p>
+    
+    <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
+        <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            {% csrf_token %}
+            <input type="file" name="file" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text);"><input type="password" name="password" placeholder="Password" required style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text);">
+            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer;">Execute</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
