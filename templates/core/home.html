@@ -45,13 +45,7 @@
                     <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">Automatically generate interactive quizzes to test knowledge.</p>
                 </a>
                 
-                <!-- Document Enhancer Card -->
-                <a href="{% url 'document_enhancer:enhancer' %}" class="message user-message tool-card" style="border-color: var(--pink);">
-                    <span style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block;">✨</span>
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Smart Enhancement</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">One-click AI scanner: auto-crop, remove shadows, and sharpen text.</p>
-                </a>
-                
+
             </div>
             
             <div style="max-width: 1200px; margin: 4rem auto 1rem;">
@@ -116,6 +110,12 @@
                     <a href="{% url 'core:compress_pdf' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
                         <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗜️</span>
                         <h4 style="font-size: 1.2rem;">Compress PDF</h4>
+                    </a>
+
+                    <!-- Document Enhancer Card -->
+                    <a href="{% url 'document_enhancer:enhancer' %}" class="message system-message tool-card" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg); border-color: var(--pink);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">✨</span>
+                        <h4 style="font-size: 1.2rem;">Smart Enhancement</h4>
                     </a>
                     
                 </div>

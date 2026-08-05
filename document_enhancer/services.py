@@ -95,27 +95,25 @@ def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: floa
     else:
         warped = orig
 
-    # 5. Background removal, contrast enhancement, text sharpening
-    # Convert to grayscale
-    warped_gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
+    # 5. Color-preserving contrast enhancement and shadow reduction
+    # Convert the warped image to LAB color space
+    lab = cv2.cvtColor(warped, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
     
-    # Apply adaptive thresholding to remove shadows and equalize lighting
-    T = cv2.adaptiveThreshold(
-        warped_gray, 
-        255, 
-        cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-        cv2.THRESH_BINARY, 
-        11, 
-        10
-    )
+    # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization) to the L (Lightness) channel
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+    cl = clahe.apply(l)
     
+    # Merge back and convert to BGR
+    limg = cv2.merge((cl, a, b))
+    final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
     # Optional: Light median blur to reduce noise
-    T = cv2.medianBlur(T, 3)
+    final = cv2.medianBlur(final, 3)
 
     # Convert back to PIL Image to apply granular enhancements
-    # T is currently a grayscale numpy array, but we need RGB to adjust saturation
-    T_bgr = cv2.cvtColor(T, cv2.COLOR_GRAY2BGR)
-    pil_img = Image.fromarray(cv2.cvtColor(T_bgr, cv2.COLOR_BGR2RGB))
+    # final is already in BGR format, convert to RGB for PIL
+    pil_img = Image.fromarray(cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
     
     # Apply Sliders
     if brightness != 1.0:
