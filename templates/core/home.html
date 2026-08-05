@@ -1,382 +1,107 @@
-{% extends "base.html" %}
+{% extends "workspace_base.html" %}
 
-{% block title %}iLovePDF Clone | Parikshon AI{% endblock %}
+{% block title %}Home | Parikshon AI{% endblock %}
 
-{% block layout %}
-<div class="ilovepdf-body">
-    <!-- Custom Top Navigation -->
-    <nav class="ilovepdf-nav">
-        <div class="nav-left">
-            <a href="{% url 'core:home' %}" class="nav-brand" style="gap: 0.5rem;">
-                <span class="brand-mark" style="background: var(--text); color: var(--bg); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 800;">P</span>
-                <span>Parikshon AI</span>
-            </a>
-            <div class="nav-links">
-                <a href="#">AI TOOLS <span class="chevron">▼</span></a>
-                <a href="#">PDF UTILITIES <span class="chevron">▼</span></a>
+{% block workspace_content %}
+<div class="workspace-main">
+    <div class="scroll-container">
+        <header class="chat-header" style="justify-content: center; text-align: center; padding: 2rem;">
+            <div>
+                <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Parikshon AI Toolkit</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Select a tool below to get started</p>
             </div>
-        </div>
-        <div class="nav-right">
-            <a href="{% url 'core:login' %}" class="btn-login">Login</a>
-            <a href="{% url 'core:register' %}" class="btn-signup">Sign up</a>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
-                <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-            </button>
-        </div>
-    </nav>
+        </header>
+        
+        <div class="content-scroll" style="padding: 2rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+                
+                <!-- Chat Card -->
+                <a href="{% url 'core:chat' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">💬</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Chat with PDF</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Ask questions and interact with your document instantly.</p>
+                </a>
 
-    <!-- Hero Section -->
-    <main class="ilovepdf-main">
-        <section class="hero-section">
-            <h1>The Ultimate AI & PDF Utility Platform</h1>
-            <p>Every tool you need to extract, chat with, and manipulate your documents. 100% FREE and easy to use. Merge, extract, convert, and chat with PDFs using advanced AI in just a few clicks.</p>
-        </section>
+                <!-- OCR Card -->
+                <a href="{% url 'core:ocr' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔍</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">OCR Extractor</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Extract raw text from scanned PDFs or images easily.</p>
+                </a>
 
-        <!-- Filter Pills -->
-        <section class="filter-pills">
-            <button class="pill active">All</button>
-            <button class="pill">AI Intelligence</button>
-            <button class="pill">Organize PDF</button>
-            <button class="pill">Convert PDF</button>
-            <button class="pill">PDF Security</button>
-        </section>
+                <!-- Keywords Card -->
+                <a href="{% url 'core:keywords' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">🔑</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Keywords</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Analyze your document for top topics and key phrases.</p>
+                </a>
 
-        <!-- Tools Grid -->
-        <section class="tools-grid">
-            <!-- Merge PDF -->
-            <a href="#" class="tool-card">
-                <div class="icon-wrapper" style="color: #FF5A5F;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-                </div>
-                <h3>Merge PDF</h3>
-                <p>Combine PDFs in the order you want with the easiest PDF merger available.</p>
-            </a>
-
-            <!-- Split PDF -->
-            <a href="#" class="tool-card">
-                <div class="icon-wrapper" style="color: #FF7043;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M21 3l-6 6M21 21l-6-6M16 21h5v-5M8 8L3 3M3 3h5M3 3v5M8 16l-5 5M3 21h5M3 21v-5"/></svg>
-                </div>
-                <h3>Split PDF</h3>
-                <p>Separate one page or a whole set for easy conversion into independent PDF files.</p>
-            </a>
-
-            <!-- Chat with PDF (Our AI Feature) -->
-            <a href="{% url 'core:chat' %}" class="tool-card">
-                <div class="icon-wrapper" style="color: #9C27B0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <h3>Chat with PDF</h3>
-                <p>Ask questions and interact with your document instantly using AI.</p>
-            </a>
+                <!-- Quiz Card -->
+                <a href="{% url 'core:quiz' %}" class="message user-message tool-card">
+                    <span style="font-size: 3.5rem; margin-bottom: 1rem; display: block;">📝</span>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Quiz Generator</h3>
+                    <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.5;">Automatically generate interactive quizzes to test knowledge.</p>
+                </a>
+                
+            </div>
             
-            <!-- OCR Extractor (Our AI Feature) -->
-            <a href="{% url 'core:ocr' %}" class="tool-card">
-                <div class="icon-wrapper" style="color: #4CAF50;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <div style="max-width: 1200px; margin: 4rem auto 1rem;">
+                <h2 class="header-title" style="text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem; border-top: var(--border); padding-top: 2rem;">PDF Utilities (Coming Soon)</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; opacity: 0.6;">
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🗂️</span>
+                        <h4 style="font-size: 1.2rem;">Merge PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">✂️</span>
+                        <h4 style="font-size: 1.2rem;">Split PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🖼️</span>
+                        <h4 style="font-size: 1.2rem;">JPG to PDF</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📄</span>
+                        <h4 style="font-size: 1.2rem;">PDF to JPG</h4>
+                    </div>
+                    
+                    <div class="message system-message" style="text-align: center; padding: 1.5rem; border: var(--border-thick); background: var(--bg);">
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔒</span>
+                        <h4 style="font-size: 1.2rem;">Protect PDF</h4>
+                    </div>
+                    
                 </div>
-                <h3>OCR Extractor</h3>
-                <p>Extract raw text from scanned PDFs or images quickly and easily.</p>
-            </a>
-
-            <!-- Merge PDF (Coming Soon) -->
-            <a href="#" class="tool-card" style="opacity: 0.7;">
-                <div class="icon-wrapper" style="color: #FF5A5F;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-                </div>
-                <h3>Merge PDF</h3>
-                <p>Combine multiple PDFs into a single document instantly.</p>
-            </a>
-
-            <!-- Split PDF (Coming Soon) -->
-            <a href="#" class="tool-card" style="opacity: 0.7;">
-                <div class="icon-wrapper" style="color: #FF7043;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M21 3l-6 6M21 21l-6-6M16 21h5v-5M8 8L3 3M3 3h5M3 3v5M8 16l-5 5M3 21h5M3 21v-5"/></svg>
-                </div>
-                <h3>Split PDF</h3>
-                <p>Extract pages or separate a PDF into multiple smaller files.</p>
-            </a>
-
-            <!-- JPG to PDF (Coming Soon) -->
-            <a href="#" class="tool-card" style="opacity: 0.7;">
-                <div class="icon-wrapper" style="color: #2196F3;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </div>
-                <h3>JPG to PDF</h3>
-                <p>Convert your image files perfectly into PDF documents.</p>
-            </a>
-
-            <!-- PDF to JPG (Coming Soon) -->
-            <a href="#" class="tool-card" style="opacity: 0.7;">
-                <div class="icon-wrapper" style="color: #4CAF50;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="10" cy="13" r="2"/><path d="M7 21l5-5 5 5"/></svg>
-                </div>
-                <h3>PDF to JPG</h3>
-                <p>Extract every page of a PDF as high-quality JPG images.</p>
-            </a>
-
-            <!-- Protect PDF (Coming Soon) -->
-            <a href="#" class="tool-card" style="opacity: 0.7;">
-                <div class="icon-wrapper" style="color: #E91E63;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <h3>Protect PDF</h3>
-                <p>Secure your PDF documents with a strong password encryption.</p>
-            </a>
-        </section>
-    </main>
+            </div>
+            
+        </div>
+    </div>
 </div>
 
 <style>
-    /* Reset and Base Styles for iLovePDF Theme */
-    :root {
-        --ilove-bg: #f8f9fa;
-        --ilove-text: #2d3748;
-        --ilove-text-light: #718096;
-        --ilove-card-bg: #ffffff;
-        --ilove-border: #e2e8f0;
-        --ilove-red: #e53e3e;
-        --ilove-hover: #f1f5f9;
-        --ilove-pill-bg: #ffffff;
-        --ilove-pill-border: #cbd5e1;
-        --ilove-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        --ilove-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-    
-    [data-theme="dark"] {
-        --ilove-bg: #1a202c;
-        --ilove-text: #f7fafc;
-        --ilove-text-light: #a0aec0;
-        --ilove-card-bg: #2d3748;
-        --ilove-border: #4a5568;
-        --ilove-hover: #4a5568;
-        --ilove-pill-bg: #2d3748;
-        --ilove-pill-border: #4a5568;
-        --ilove-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        --ilove-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    }
-
-    .ilovepdf-body {
-        background-color: var(--ilove-bg);
-        color: var(--ilove-text);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        min-height: 100vh;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Top Navigation */
-    .ilovepdf-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 1.5rem;
-        height: 70px;
-        background-color: var(--ilove-card-bg);
-        border-bottom: 1px solid var(--ilove-border);
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-
-    .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 2.5rem;
-    }
-
-    .nav-brand {
-        text-decoration: none;
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--ilove-text);
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .nav-brand .heart { color: var(--ilove-red); }
-    .nav-brand .brand-sub { font-size: 0.8rem; font-weight: 500; color: var(--ilove-text-light); margin-left: 0.5rem; }
-
-    .nav-links {
-        display: none;
-    }
-
-    @media (min-width: 900px) {
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-    }
-
-    .nav-links a {
-        text-decoration: none;
-        color: var(--ilove-text);
-        font-weight: 600;
-        font-size: 0.85rem;
-        transition: color 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .nav-links a:hover {
-        color: var(--ilove-red);
-    }
-    
-    .chevron { font-size: 0.6rem; }
-
-    .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .nav-right a {
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .btn-login {
-        color: var(--ilove-text);
-    }
-    
-    .btn-login:hover { color: var(--ilove-red); }
-
-    .btn-signup {
-        background-color: var(--ilove-red);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        transition: background-color 0.2s;
-    }
-
-    .btn-signup:hover { background-color: #c53030; color: white; }
-
-    /* Hero Section */
-    .ilovepdf-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 4rem 1.5rem;
-        max-width: 1200px;
-        margin: 0 auto;
-        width: 100%;
-    }
-
-    .hero-section {
-        text-align: center;
-        max-width: 800px;
-        margin-bottom: 2.5rem;
-    }
-
-    .hero-section h1 {
-        font-size: clamp(2rem, 5vw, 3rem);
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1rem;
-        color: var(--ilove-text);
-    }
-
-    .hero-section p {
-        font-size: 1.1rem;
-        color: var(--ilove-text-light);
-        line-height: 1.6;
-    }
-
-    /* Filter Pills */
-    .filter-pills {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.75rem;
-        margin-bottom: 3rem;
-    }
-
-    .pill {
-        background: var(--ilove-pill-bg);
-        border: 1px solid var(--ilove-pill-border);
-        color: var(--ilove-text);
-        padding: 0.5rem 1.25rem;
-        border-radius: 9999px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .pill:hover {
-        background: var(--ilove-hover);
-    }
-
-    .pill.active {
-        background: var(--ilove-text);
-        color: var(--ilove-bg);
-        border-color: var(--ilove-text);
-    }
-    
-    [data-theme="dark"] .pill.active {
-        background: white;
-        color: black;
-        border-color: white;
-    }
-
-    /* Tools Grid */
-    .tools-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-        width: 100%;
-    }
-
     .tool-card {
-        background: var(--ilove-card-bg);
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-decoration: none;
-        color: var(--ilove-text);
-        box-shadow: var(--ilove-shadow);
-        transition: all 0.2s ease-in-out;
-        border: 1px solid var(--ilove-border);
+        text-decoration: none !important;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-    }
-
-    .tool-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--ilove-shadow-hover);
-        border-color: var(--ilove-pill-border);
-    }
-
-    .icon-wrapper {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 1rem;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        border: var(--border-thick);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        color: var(--text);
+        cursor: pointer;
     }
     
-    .icon-wrapper svg {
-        width: 100%;
-        height: 100%;
-    }
-
-    .tool-card h3 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: var(--ilove-text);
-    }
-
-    .tool-card p {
-        font-size: 0.85rem;
-        color: var(--ilove-text-light);
-        line-height: 1.5;
-        margin: 0;
+    .tool-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent);
     }
 </style>
 {% endblock %}
