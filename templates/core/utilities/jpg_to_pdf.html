@@ -8,8 +8,20 @@
     <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
         <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
             {% csrf_token %}
-            <input type="file" name="files" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text);">
-            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer;">Execute</button>
+            <label style="font-weight: bold;">Upload File(s)</label>
+            <input type="file" name="files" multiple required accept="image/*" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+        <label style="font-weight: bold; margin-top: 0.5rem;">Orientation</label>
+        <select name="orientation" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+        </select>
+        <label style="font-weight: bold; margin-top: 0.5rem;">Margins</label>
+        <select name="margin" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="none">No Margin</option>
+            <option value="small">Small Margin</option>
+            <option value="large">Large Margin</option>
+        </select>
+            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
         </form>
     </div>
 </div>

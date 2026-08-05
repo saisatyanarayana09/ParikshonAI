@@ -23,13 +23,14 @@ def split_view(request):
         file = request.FILES.get('file')
         start = int(request.POST.get('start_page', 1))
         end = int(request.POST.get('end_page', 1))
+        mode = request.POST.get('mode', 'range')
         if not file:
             return HttpResponseBadRequest("Please upload a PDF file.")
             
         try:
-            output = pdf_tools.split_pdf(file, start, end)
-            response = HttpResponse(output, content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="split.pdf"'
+            output, content_type, filename = pdf_tools.split_pdf(file, start, end, mode)
+            response = HttpResponse(output, content_type=content_type)
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
             return response
         except Exception as e:
             return HttpResponseBadRequest(str(e))
@@ -71,11 +72,12 @@ def rotate_view(request):
     if request.method == "POST":
         file = request.FILES.get('file')
         degrees = int(request.POST.get('degrees', 90))
+        apply_to = request.POST.get('apply_to', 'all')
         if not file:
             return HttpResponseBadRequest("File is required.")
             
         try:
-            output = pdf_tools.rotate_pdf(file, degrees)
+            output = pdf_tools.rotate_pdf(file, degrees, apply_to)
             response = HttpResponse(output, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="rotated.pdf"'
             return response
@@ -103,11 +105,13 @@ def remove_pages_view(request):
 def jpg_to_pdf_view(request):
     if request.method == "POST":
         files = request.FILES.getlist('files')
+        orientation = request.POST.get('orientation', 'portrait')
+        margin = request.POST.get('margin', 'none')
         if not files:
             return HttpResponseBadRequest("Please upload at least one image.")
             
         try:
-            output = pdf_tools.jpg_to_pdf(files)
+            output = pdf_tools.jpg_to_pdf(files, orientation, margin)
             response = HttpResponse(output, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="images.pdf"'
             return response
@@ -118,11 +122,12 @@ def jpg_to_pdf_view(request):
 def pdf_to_jpg_view(request):
     if request.method == "POST":
         file = request.FILES.get('file')
+        quality = request.POST.get('quality', 'high')
         if not file:
             return HttpResponseBadRequest("File is required.")
             
         try:
-            output = pdf_tools.pdf_to_jpg(file)
+            output = pdf_tools.pdf_to_jpg(file, quality)
             response = HttpResponse(output, content_type='application/zip')
             response['Content-Disposition'] = 'attachment; filename="images.zip"'
             return response
@@ -149,11 +154,14 @@ def watermark_view(request):
     if request.method == "POST":
         file = request.FILES.get('file')
         text = request.POST.get('text', 'CONFIDENTIAL')
+        position = request.POST.get('position', 'center')
+        opacity = int(request.POST.get('opacity', 50))
+        rotation = int(request.POST.get('rotation', 45))
         if not file:
             return HttpResponseBadRequest("File is required.")
             
         try:
-            output = pdf_tools.watermark_pdf(file, text)
+            output = pdf_tools.watermark_pdf(file, text, position, opacity, rotation)
             response = HttpResponse(output, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="watermarked.pdf"'
             return response
@@ -164,11 +172,13 @@ def watermark_view(request):
 def add_page_numbers_view(request):
     if request.method == "POST":
         file = request.FILES.get('file')
+        position = request.POST.get('position', 'bottom-center')
+        format_type = request.POST.get('format_type', 'number')
         if not file:
             return HttpResponseBadRequest("File is required.")
             
         try:
-            output = pdf_tools.add_page_numbers(file)
+            output = pdf_tools.add_page_numbers(file, position, format_type)
             response = HttpResponse(output, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="numbered.pdf"'
             return response
@@ -179,11 +189,12 @@ def add_page_numbers_view(request):
 def compress_view(request):
     if request.method == "POST":
         file = request.FILES.get('file')
+        level = request.POST.get('level', 'basic')
         if not file:
             return HttpResponseBadRequest("File is required.")
             
         try:
-            output = pdf_tools.compress_pdf(file)
+            output = pdf_tools.compress_pdf(file, level)
             response = HttpResponse(output, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="compressed.pdf"'
             return response

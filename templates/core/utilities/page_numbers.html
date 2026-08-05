@@ -8,8 +8,24 @@
     <div style="background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow); width: 100%; max-width: 600px;">
         <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
             {% csrf_token %}
-            <input type="file" name="file" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text);">
-            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer;">Execute</button>
+            <label style="font-weight: bold;">Upload File(s)</label>
+            <input type="file" name="file" required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+        <label style="font-weight: bold; margin-top: 0.5rem;">Position</label>
+        <select name="position" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="bottom-center">Bottom Center</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="bottom-right">Bottom Right</option>
+            <option value="top-center">Top Center</option>
+            <option value="top-left">Top Left</option>
+            <option value="top-right">Top Right</option>
+        </select>
+        <label style="font-weight: bold; margin-top: 0.5rem;">Format</label>
+        <select name="format_type" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
+            <option value="number">1</option>
+            <option value="page-n">Page 1</option>
+            <option value="n-of-m">Page 1 of X</option>
+        </select>
+            <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
         </form>
     </div>
 </div>
