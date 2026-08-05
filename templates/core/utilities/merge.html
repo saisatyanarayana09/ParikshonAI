@@ -35,19 +35,19 @@
 </script>
 {% endblock %}
 {% block workspace_content %}
-<div class="workspace-main" style="overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
-    <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Merge PDF</h1>
-    <p style="color: var(--text-muted); margin-bottom: 2rem;">Combine multiple PDFs into a single document instantly.</p>
+<div class="workspace-main">
+    <h1 class="header-title">Merge PDF</h1>
+    <p class="header-description" style="color: var(--text-muted); margin-bottom: 2rem; text-align: center;">Combine multiple PDFs into a single document instantly.</p>
     
-    <div style="display: flex; gap: 2rem; width: 100%; max-width: 1200px; align-items: flex-start; flex-wrap: wrap;">
+    <div class="tool-layout">
         
         
 
         <!-- Right Side: Form Options -->
-        <div style="flex: 1; min-width: 300px; background: var(--surface); border: var(--border-thick); padding: 2rem; box-shadow: var(--shadow);">
-            <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="tool-panel">
+            <form method="POST" enctype="multipart/form-data" class="tool-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
                 {% csrf_token %}
-                <label style="font-weight: bold;">Upload File</label>
+                <label class="form-label" style="font-weight: bold;">Upload File</label>
                 <input type="file" name="files" id="pdf-upload" multiple required accept=".pdf" style="padding: 1rem; border: var(--border); background: var(--bg); color: var(--text); width: 100%;">
                 <button type="submit" class="primary-btn" style="width: 100%; padding: 1rem; font-size: 1.2rem; cursor: pointer; margin-top: 1rem;">Execute</button>
             </form>
