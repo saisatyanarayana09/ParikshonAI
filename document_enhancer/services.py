@@ -82,12 +82,20 @@ def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: floa
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
         
-        # A document must have 4 points, be convex, and take up at least 15% of the image
+        # Prefer a perfect 4-point convex polygon (like a clean sheet of paper)
         if len(approx) == 4 and cv2.isContourConvex(approx):
             if cv2.contourArea(approx) > 0.15 * image_area:
-                # Un-pad the coordinates back to the original image space
                 screenCnt = approx - pad
                 break
+                
+    # Fallback: If no perfect 4 points were found (e.g., covered by fingers or plastic sleeve),
+    # just find the tightest bounding rectangle (minAreaRect) around the largest contour.
+    if screenCnt is None and len(cnts) > 0:
+        largest_c = cnts[0]
+        if cv2.contourArea(largest_c) > 0.15 * image_area:
+            rect = cv2.minAreaRect(largest_c)
+            box = cv2.boxPoints(rect)
+            screenCnt = np.intp(box) - pad
 
     # 4. Perspective transform (Auto Crop & Deskew)
     if screenCnt is not None:
