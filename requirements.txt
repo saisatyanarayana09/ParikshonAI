@@ -28,3 +28,7 @@ pgvector>=0.2.5
 # Production server
 gunicorn>=22.0.0
 whitenoise>=6.7.0
+
+# Document Enhancement (OpenCV)
+opencv-python-headless>=4.10.0.84
+numpy>=1.26.4
