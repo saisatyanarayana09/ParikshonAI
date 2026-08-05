@@ -4,6 +4,36 @@
 <meta name="description" content="Extract every page of a PDF as high-quality JPG images.">
 <meta name="keywords" content="pdf to jpg, convert pdf to images, pdf pages to jpg">
 {% endblock %}
+{% block canonical %}
+<link rel="canonical" href="https://parikshonai.onrender.com/utilities/pdf-to-jpg/">
+{% endblock %}
+{% block og_tags %}
+<meta property="og:title" content="PDF to JPG | Parikshon AI">
+<meta property="og:description" content="Extract every page of a PDF as high-quality JPG images.">
+<meta property="og:url" content="https://parikshonai.onrender.com/utilities/pdf-to-jpg/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PDF to JPG | Parikshon AI">
+<meta name="twitter:description" content="Extract every page of a PDF as high-quality JPG images.">
+{% endblock %}
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "PDF to JPG - Parikshon AI",
+  "url": "https://parikshonai.onrender.com/utilities/pdf-to-jpg/",
+  "description": "Extract every page of a PDF as high-quality JPG images.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+{% endblock %}
 {% block workspace_content %}
 <div class="workspace-main" style="overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center;">
     <h1 class="header-title" style="font-size: 2.5rem; margin-bottom: 1rem;">PDF to JPG</h1>
