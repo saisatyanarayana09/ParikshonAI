@@ -68,8 +68,8 @@ def process_document(image_bytes: bytes) -> bytes:
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
     edged = cv2.Canny(gray, 75, 200)
 
-    # 3. Find contours
-    cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    # 3. Find contours using RETR_EXTERNAL to only get the outermost bounds, ignoring inner tables
+    cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
     screenCnt = None
@@ -84,10 +84,11 @@ def process_document(image_bytes: bytes) -> bytes:
 
     # 4. Perspective transform (Auto Crop & Deskew)
     if screenCnt is not None:
-        # Check if the detected contour area is reasonably large (e.g. > 10% of image area)
+        # We only auto-crop if the detected boundary is substantially large (> 30% of image)
+        # This prevents randomly cropping a small box if the image is already a flat scan
         image_area = image.shape[0] * image.shape[1]
         contour_area = cv2.contourArea(screenCnt)
-        if contour_area > 0.1 * image_area:
+        if contour_area > 0.3 * image_area:
             warped = four_point_transform(orig, screenCnt.reshape(4, 2))
         else:
             warped = orig
