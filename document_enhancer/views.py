@@ -1,7 +1,10 @@
 import base64
+import logging
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, JsonResponse
 from .services import process_document
+
+logger = logging.getLogger(__name__)
 
 def enhancer_view(request):
     if request.method == "POST":
@@ -45,6 +48,7 @@ def enhancer_view(request):
             })
             
         except Exception as e:
+            logger.exception("Document enhancement failed during view processing.")
             error_msg = f"Error processing image: {str(e)}"
             if request.headers.get('Accept') == 'application/json':
                 return JsonResponse({"error": error_msg}, status=400)

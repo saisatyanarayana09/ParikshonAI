@@ -2,23 +2,23 @@ import cv2
 import numpy as np
 from io import BytesIO
 from PIL import Image, ImageEnhance
+import logging
+
+logger = logging.getLogger(__name__)
 
 def order_points(pts):
-    # Initialzie a list of coordinates that will be ordered
-    # such that the first entry in the list is the top-left,
-    # the second entry is the top-right, the third is the
-    # bottom-right, and the fourth is the bottom-left
+    """
+    Orders coordinates in the following order:
+    Top-left, Top-right, Bottom-right, Bottom-left.
+    """
     rect = np.zeros((4, 2), dtype="float32")
     
-    # the top-left point will have the smallest sum, whereas
-    # the bottom-right point will have the largest sum
+    # Top-left has the smallest sum, Bottom-right has the largest sum
     s = pts.sum(axis=1)
     rect[0] = pts[np.argmin(s)]
     rect[2] = pts[np.argmax(s)]
     
-    # now, compute the difference between the points, the
-    # top-right point will have the smallest difference,
-    # whereas the bottom-left will have the largest difference
+    # Top-right has the smallest difference, Bottom-left has the largest difference
     diff = np.diff(pts, axis=1)
     rect[1] = pts[np.argmin(diff)]
     rect[3] = pts[np.argmax(diff)]
@@ -26,119 +26,176 @@ def order_points(pts):
     return rect
 
 def four_point_transform(image, pts):
+    """
+    Applies a perspective transform to obtain a top-down, "birds-eye" view.
+    """
     rect = order_points(pts)
     (tl, tr, br, bl) = rect
-    
-    # compute the width of the new image
+
+    # Compute the width of the new image
     widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
     widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
     maxWidth = max(int(widthA), int(widthB))
-    
-    # compute the height of the new image
+
+    # Compute the height of the new image
     heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
     heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
     maxHeight = max(int(heightA), int(heightB))
-    
+
+    # Construct destination points for the warp
     dst = np.array([
         [0, 0],
         [maxWidth - 1, 0],
         [maxWidth - 1, maxHeight - 1],
         [0, maxHeight - 1]], dtype="float32")
-        
+
+    # Calculate the perspective transform matrix and warp
     M = cv2.getPerspectiveTransform(rect, dst)
     warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
     
     return warped
 
-def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: float = 1.0, saturation: float = 1.0) -> bytes:
+def find_document_contour(image, max_dim=800):
     """
-    Takes an image in bytes, applies the enhancement pipeline and adjustments,
-    and returns the enhanced image in bytes (JPEG).
+    Detects the document in the image. Optimizes performance by resizing 
+    large images before edge detection, while returning coordinates scaled 
+    to the original image size.
     """
-    # 1. Read image from bytes
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    if image is None:
-        raise ValueError("Could not decode image")
+    # 1. Resize for performance and better edge detection
+    h, w = image.shape[:2]
+    ratio = 1.0
+    if h > max_dim or w > max_dim:
+        ratio = h / float(max_dim) if h > w else w / float(max_dim)
+        small = cv2.resize(image, (int(w / ratio), int(h / ratio)))
+    else:
+        small = image.copy()
 
-    orig = image.copy()
-    
-    # 2. Pad the image to ensure document edges form closed contours even if they touch the image border
+    # 2. Add padding to guarantee closed contours if document touches the border
     pad = 10
-    padded = cv2.copyMakeBorder(image, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=[0, 0, 0])
-    
-    gray = cv2.cvtColor(padded, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(gray, 75, 200)
+    padded = cv2.copyMakeBorder(small, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=[0, 0, 0])
 
-    # 3. Find all contours in the padded image
+    # 3. Grayscale and Bilateral Filtering
+    # Bilateral filter removes noise (like fabric patterns) while keeping edges sharp
+    gray = cv2.cvtColor(padded, cv2.COLOR_BGR2GRAY)
+    gray = cv2.bilateralFilter(gray, 11, 17, 17)
+
+    # 4. Edge Detection
+    edged = cv2.Canny(gray, 30, 200)
+
+    # Dilate edges slightly to close any small gaps (e.g. from plastic glare)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    edged = cv2.dilate(edged, kernel, iterations=1)
+
+    # 5. Contour Extraction
     cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
     screenCnt = None
-    image_area = image.shape[0] * image.shape[1]
-    
+    image_area = small.shape[0] * small.shape[1]
+
+    # 6. Find the best contour
     for c in cnts:
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        
-        # Prefer a perfect 4-point convex polygon (like a clean sheet of paper)
-        if len(approx) == 4 and cv2.isContourConvex(approx):
-            if cv2.contourArea(approx) > 0.15 * image_area:
-                screenCnt = approx - pad
-                break
-                
-    # Fallback: If no perfect 4 points were found (e.g., covered by fingers or plastic sleeve),
-    # just find the tightest bounding rectangle (minAreaRect) around the largest contour.
+
+        # Criteria A: Perfect 4-point convex polygon, area > 10% of image
+        if len(approx) == 4 and cv2.isContourConvex(approx) and cv2.contourArea(approx) > 0.10 * image_area:
+            screenCnt = approx
+            break
+
+    # 7. Fallback: Minimum Area Rectangle for the largest valid contour
+    # Handles cases where fingers break the document border
     if screenCnt is None and len(cnts) > 0:
         largest_c = cnts[0]
-        if cv2.contourArea(largest_c) > 0.15 * image_area:
+        if cv2.contourArea(largest_c) > 0.10 * image_area:
             rect = cv2.minAreaRect(largest_c)
             box = cv2.boxPoints(rect)
-            screenCnt = np.intp(box) - pad
+            screenCnt = np.intp(box)
 
-    # 4. Perspective transform (Auto Crop & Deskew)
+    # 8. Scale points back to original image resolution
     if screenCnt is not None:
-        warped = four_point_transform(orig, screenCnt.reshape(4, 2))
-    else:
-        warped = orig
+        # Remove the padding offset first, then multiply by the resize ratio
+        screenCnt = (screenCnt - pad) * ratio
+        return screenCnt
+        
+    return None
 
-    # 5. "Magic Color" Enhancement: Remove shadows and make background pure white while preserving color
-    warped_gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
-    
-    # Estimate the background illumination using morphological dilation
-    # This effectively erases the dark text, leaving only the paper's shadow profile
+def enhance_lighting(image):
+    """
+    Applies professional 'Scanner App' effects: background whitening, 
+    shadow removal, contrast optimization, and text sharpening.
+    """
+    # Convert to LAB color space to process illumination (L) without distorting colors (A, B)
+    lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+
+    # 1. Shadow Removal & Background Whitening
+    # Morphological dilation erases dark text, leaving only the shadow profile of the paper
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25))
-    bg = cv2.dilate(warped_gray, kernel)
+    bg = cv2.dilate(l, kernel)
     bg = cv2.GaussianBlur(bg, (21, 21), 0)
-    
-    # Prevent division by zero
-    bg = np.maximum(bg, 1)
-    
-    warped_float = warped.astype(np.float32)
-    bg_bgr = cv2.cvtColor(bg, cv2.COLOR_GRAY2BGR).astype(np.float32)
-    
-    # Divide the image by its background to normalize lighting (shadows become white)
-    magic = np.clip((warped_float / bg_bgr) * 255, 0, 255).astype(np.uint8)
+    bg = np.maximum(bg, 1)  # Prevent division by zero
 
-    # Convert back to PIL Image to apply granular enhancements
-    pil_img = Image.fromarray(cv2.cvtColor(magic, cv2.COLOR_BGR2RGB))
-    
-    # Apply Sliders
-    if brightness != 1.0:
-        enhancer = ImageEnhance.Brightness(pil_img)
-        pil_img = enhancer.enhance(brightness)
-        
-    if contrast != 1.0:
-        enhancer = ImageEnhance.Contrast(pil_img)
-        pil_img = enhancer.enhance(contrast)
-        
-    if saturation != 1.0:
-        enhancer = ImageEnhance.Color(pil_img)
-        pil_img = enhancer.enhance(saturation)
+    # Normalize the lighting by dividing the L channel by the background shadow map
+    l_float = l.astype(np.float32)
+    bg_float = bg.astype(np.float32)
+    l_normalized = np.clip((l_float / bg_float) * 255, 0, 255).astype(np.uint8)
 
-    out_io = BytesIO()
-    # Save as highly compressed PNG or high-quality JPEG
-    pil_img.save(out_io, format='JPEG', quality=90)
-    
-    return out_io.getvalue()
+    # 2. Contrast Enhancement (Adaptive)
+    # CLAHE adds punchy contrast, ensuring text is dark and paper is uniformly white
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    l_enhanced = clahe.apply(l_normalized)
+
+    # Merge channels and convert back to BGR
+    merged = cv2.merge((l_enhanced, a, b))
+    color_enhanced = cv2.cvtColor(merged, cv2.COLOR_LAB2BGR)
+
+    # 3. Text Sharpening (Unsharp Masking)
+    # Subtly sharpens the image to mimic a high-quality scanner
+    gaussian = cv2.GaussianBlur(color_enhanced, (0, 0), 2.0)
+    sharpened = cv2.addWeighted(color_enhanced, 1.5, gaussian, -0.5, 0)
+
+    return sharpened
+
+def process_document(image_bytes: bytes, brightness: float = 1.0, contrast: float = 1.0, saturation: float = 1.0) -> bytes:
+    """
+    Main processing pipeline. Fully in-memory, handles resizing, cropping, 
+    lighting enhancements, and granular PIL adjustments.
+    """
+    try:
+        # 1. Decode bytes directly to OpenCV array (supports JPG, PNG, WebP, BMP)
+        np_arr = np.frombuffer(image_bytes, np.uint8)
+        image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        if image is None:
+            raise ValueError("Invalid or corrupted image file format.")
+
+        # 2. Document Detection & Cropping
+        pts = find_document_contour(image)
+        if pts is not None:
+            warped = four_point_transform(image, pts.reshape(4, 2))
+        else:
+            # Graceful fallback: Apply enhancements to the full image if no document is detected
+            warped = image.copy()
+
+        # 3. Scanner-Style Enhancement Pipeline
+        enhanced_cv = enhance_lighting(warped)
+
+        # 4. Apply Granular User Adjustments via Pillow
+        pil_img = Image.fromarray(cv2.cvtColor(enhanced_cv, cv2.COLOR_BGR2RGB))
+        
+        if brightness != 1.0:
+            pil_img = ImageEnhance.Brightness(pil_img).enhance(brightness)
+        if contrast != 1.0:
+            pil_img = ImageEnhance.Contrast(pil_img).enhance(contrast)
+        if saturation != 1.0:
+            pil_img = ImageEnhance.Color(pil_img).enhance(saturation)
+
+        # 5. Output to memory buffer
+        out_io = BytesIO()
+        pil_img.save(out_io, format='JPEG', quality=90)
+        return out_io.getvalue()
+        
+    except Exception as e:
+        logger.error(f"Document enhancement failed: {str(e)}")
+        raise
