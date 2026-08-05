@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block layout %}
 <div class="workspace-container">
-    <aside class="workspace-sidebar" id="workspace-sidebar">
+    <aside class="workspace-sidebar {% block sidebar_classes %}{% endblock %}" id="workspace-sidebar">
         <div class="sidebar-body" id="sidebar-body">
             <nav class="sidebar-nav">
                 <a class="nav-item {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'core:chat' %}">
